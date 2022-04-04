@@ -1,80 +1,78 @@
 /*-------- Steps --------*/
 
 .steps {
+  display: flex;
+  margin-top: 40px;
+
+  &__item {
     display: flex;
-    margin-top: 40px;
+    flex-direction: column;
+    width: 25%;
+  }
 
-    &__item {
-        display: flex;
-        flex-direction: column;
-        width: 25%;
-    }
+  &__item:before,
+  &__item:after {
+    content: "";
+  }
 
-    &__item:before, &__item:after {
-        content: "";
-    }
+  &__item-active:before {
+    width: 10px;
+    height: 10px;
+    margin-top: 24px;
+    border-radius: 50%;
+    background-color: $red;
+    order: -2;
+    z-index: 1;
+  }
 
-    &__item:before {
-        width: 10px;
-        height: 10px;
-        margin-top: 24px;
-        border-radius: 50%;
-        background-color: $red;
-        order: -2;
-        z-index: 1;
-    }
+  &__item-active:after {
+    width: 100%;
+    height: 1px;
+    margin-top: -5px;
+    order: -1;
+    background-color: #fff;
+  }
 
-    &__item:after {
-        width: 100%;
-        height: 1px;
-        margin-top: -5px;
-        order: -1;
-        background-color: #fff;
-    }
+  &__title {
+    order: -3;
+    color: #fff;
+  }
 
-    &__title {
-        order: -3;
-        color: #fff;
-    }
+  &__name {
+    margin-top: 24px;
+    font-family: $font-sb;
+    font-size: 18px;
+    color: #fff;
+  }
 
-    &__name {
-        margin-top: 24px;
-        font-family: $font-sb;
-        font-size: 18px;
-        color: #fff;
-    }
-
-    &__text {
-        max-width: 80%;
-        margin-top: 12px;
-        color: $mudy;
-        line-height: 1.5;
-    }
+  &__text {
+    max-width: 80%;
+    margin-top: 12px;
+    color: $mudy;
+    line-height: 1.5;
+  }
 }
 
 @media (max-width: 1219px) {
-
-    .steps {
-
-        &__item:before {
-            margin-top: 20px;
-        }
-
-        &__name {
-            margin-top: 20px;
-            font-size: 14px;
-        }
-
-        &__text {
-            margin-top: 10px;
-            font-size: 12px;
-        }
+  .steps {
+    &__item:before {
+      margin-top: 20px;
     }
+
+    &__name {
+      margin-top: 20px;
+      font-size: 14px;
+    }
+
+    &__text {
+      margin-top: 10px;
+      font-size: 12px;
+    }
+  }
 }
 
 @media (max-width: 767px) {
-
-    .steps {
-        display: none;
-    }
+  .steps {
+    display: none;
+  }
 }

@@ -1,209 +1,219 @@
 /*-------- Input --------*/
 
 .input-wrapper {
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+  }
 
-    &__header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 12px;
-    }
-    
-    &__row {
-        height: 48px;
-        position: relative;
+  &__row {
+    height: 48px;
+    position: relative;
 
-        background: #202226;
-        border: 1px solid #484545;
-        border-radius: 8px;
-    }
+    background: #202226;
+    border: 1px solid #484545;
+    border-radius: 8px;
+  }
 
-    &__input {
-        width: 100%;
-        height: 100%;
-        padding: 0 20px;
-        font-family: $font-r;
-        font-size: 16px;
-    }
+  &__input {
+    width: 100%;
+    height: 100%;
+    padding: 0 20px;
+    font-family: $font-r;
+    font-size: 16px;
+  }
 
-    &__errors {
-        margin-top: 16px;
-    }
+  &__errors {
+    margin-top: 16px;
+  }
 
-    &__error {
-        color: $red;
-    }
+  &__error {
+    color: $red;
+  }
 
-    &__error:not(:first-child) {
-        margin-top: 5px;
-    }
+  &__error:not(:first-child) {
+    margin-top: 5px;
+  }
 
-    &__info {
-        color: #fff;
-    }
+  &__info {
+    color: #fff;
+  }
 
-    &__icon {
-        pointer-events: none;
-        color: #fff;
-        position: absolute;
-        right: 20px;
-    }
+  &__icon {
+    pointer-events: none;
+    color: #fff;
+    position: absolute;
+    right: 20px;
+  }
+
+  &__calendar-icon {
+    color: #fff;
+  }
 }
 
 .input-wrapper {
+  &--search {
+    width: 354px;
+  }
 
-    &--search {
-        width: 354px;
-    }
+  &--search &__row {
+    display: flex;
+    align-items: center;
+    height: 40px;
+    position: relative;
+  }
 
-    &--search &__row {
-        display: flex;
-        align-items: center;
-        height: 40px;
-        position: relative;
-    }
+  &--search &__row:before {
+    content: "";
 
-    &--search &__row:before {
-        content: "";
+    width: 20px;
+    height: 20px;
 
-        width: 20px;
-        height: 20px;
+    position: absolute;
+    left: 16px;
 
-        position: absolute;
-        left: 16px;
+    background-image: url(../../img/svg/search.svg);
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+  }
 
-        background-image: url(../../img/svg/search.svg);
-        background-position: center;
-        background-size: cover;
-        background-repeat: no-repeat;
-    }
-
-    &--search &__input {
-        padding-left: 48px;
-    }
+  &--search &__input {
+    padding-left: 48px;
+  }
 }
 
 .input-wrapper {
+  &--balance {
+    padding: 12px 16px;
+    background: #202226;
+    border: 1px solid #484545;
+    border-radius: 8px;
+  }
 
-    &--balance {
-        padding: 12px 16px;
-        background: #202226;
-        border: 1px solid #484545;
-        border-radius: 8px;
-    }
+  &--balance &__row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 
-    &--balance &__row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+    margin-top: 8px;
 
-        margin-top: 8px;
+    height: unset;
 
-        height: unset;
+    background: transparent;
+    border: none;
+  }
 
-        background: transparent;
-        border: none;
-    }
+  &--balance &__text {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.3);
+  }
 
-    &--balance &__text {
-        font-size: 14px;
-        color: rgba(255, 255, 255, 0.3);
-    }
+  &--balance &__input {
+    padding-left: 0;
+  }
 
-    &--balance &__input {
-        padding-left: 0;
-    }
-
-    &--balance &__max {
-        font-family: $font-sb;
-        font-size: 16px;
-        color: $green;
-    }
+  &--balance &__max {
+    font-family: $font-sb;
+    font-size: 16px;
+    color: $green;
+  }
 }
 
 .input-wrapper {
+  &--comments .label:after {
+    content: none;
+  }
 
-    &--comments .label:after {
-        content: none;
-    }
-
-    &--comments &__row {
-        height: 120px;
-    }
+  &--comments &__row {
+    height: 120px;
+  }
 }
 
 .input-wrapper {
-
-    &--icon &__row {
-        display: flex;
-        align-items: center;
-    }
+  &--icon &__row {
+    display: flex;
+    align-items: center;
+  }
 }
 
 .input-wrapper {
-
-    &--items &__row {
-        height: 40px;
-    }
+  &--items &__row {
+    height: 40px;
+  }
 }
 
 @media (max-width: 1219px) and (min-width: 621px) {
-
-    .input-wrapper {
-
-        &--balance &__input {
-            font-size: 14px;
-        }
+  .input-wrapper {
+    &--balance &__input {
+      font-size: 14px;
     }
+  }
 }
 
 @media (max-width: 767px) {
-
-    .input-wrapper {
-
-        &--items {
-            width: 100%;
-        }
+  .input-wrapper {
+    &--items {
+      width: 100%;
     }
+  }
 }
 
 @media (max-width: 619px) {
-
-    .input-wrapper {
-
-        &.form__input-wrapper--first &__header {
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
-        &.form__input-wrapper--first &__info {
-            margin-top: 8px;
-        }
+  .input-wrapper {
+    &.form__input-wrapper--first &__header {
+      flex-direction: column;
+      align-items: flex-start;
     }
+
+    &.form__input-wrapper--first &__info {
+      margin-top: 8px;
+    }
+  }
 }
 
 @media (max-width: 479px) {
-
-    .input-wrapper {
-
-        &__input {
-            padding: 0 10px;
-        }
-
-        &__errors {
-            margin-top: 12px;
-        }
+  .input-wrapper {
+    &__input {
+      padding: 0 10px;
     }
 
-    .input-wrapper {
-
-        &--search &__input {
-            padding-left: 40px;
-            font-size: 14px;
-        }
-
-       &--search &__row:before {
-            left: 10px;
-        }
+    &__errors {
+      margin-top: 12px;
     }
+  }
+
+  .input-wrapper {
+    &--search &__input {
+      padding-left: 40px;
+      font-size: 14px;
+    }
+
+    &--search &__row:before {
+      left: 10px;
+    }
+  }
+}
+
+.react-datetime-picker {
+  width: 100%;
+  padding: 10px;
+
+  &__wrapper {
+    border: 0px !important;
+  }
+
+  svg {
+    color: #fff !important;
+  }
+}
+
+.displayNone {
+  opacity: 0;
+}
+
+.displayNone:hover {
+  cursor: initial;
 }

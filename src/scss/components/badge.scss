@@ -1,37 +1,42 @@
 /*-------- Badge --------*/
 
 .badge {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 
-    height: 32px;
-    padding: 0 12px;
-    border-radius: 8px;
+  height: 32px;
+  padding: 0 12px;
+  border-radius: 8px;
 
-    font-size: 14px;
+  font-size: 14px;
 
-    &:before {
-        content: "";
-        width: 8px;
-        height: 8px;
-        margin-right: 8px;
+  &:before {
+    content: "";
+    width: 8px;
+    height: 8px;
+    margin-right: 8px;
 
-        border-radius: 50%;
-        background-color: currentColor;
-    }
+    border-radius: 50%;
+    background-color: currentColor;
+  }
 
-    &.live {
-        background: rgba(49, 188, 121, 0.2);
-        color: $green;
-    }
+  &.live {
+    background: rgba(49, 188, 121, 0.2);
+    color: $green;
+  }
 
-    &.upcoming {
-        background: rgba(254, 169, 41, 0.2);
-        color: $orange;
-    }
+  &.upcoming {
+    background: rgba(254, 169, 41, 0.2);
+    color: $orange;
+  }
 
-    &.cancelled {
-        background-color: rgba(128, 129, 145, 0.2);
-        color: $mudy;
-    }
+  &.cancelled {
+    background-color: rgba(128, 129, 145, 0.2);
+    color: $mudy;
+  }
+
+  &.finished {
+    background-color: rgba(220, 22, 22, 0.386);
+    color: $mudy;
+  }
 }

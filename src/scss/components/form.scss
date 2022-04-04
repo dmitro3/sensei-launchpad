@@ -1,250 +1,281 @@
 /*-------- Form --------*/
 
+.divider {
+  width: 100%;
+}
+
+.tokenCount {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
 .form {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+
+  margin-top: 40px;
+
+  padding: 20px 24px 28px 24px;
+  background: rgba(32, 34, 38, 0.8);
+  border: 1px solid #484545;
+  backdrop-filter: blur(40px);
+  border-radius: 26px;
+
+  .input-textarea {
+    height: 100%;
+  }
+
+  &__overview {
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+    padding: 20px;
+
+    div {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+
+      h1 {
+        font-size: 15px;
+        text-transform: capitalize;
+      }
+    }
+  }
+
+  &__header {
+    display: flex;
+    align-items: center;
     justify-content: space-between;
+    width: 100%;
+  }
 
-    margin-top: 40px;
-    
-    padding: 20px 24px 28px 24px;
-    background: rgba(32, 34, 38, 0.8);
-    border: 1px solid #484545;
-    backdrop-filter: blur(40px);
-    border-radius: 26px;
+  &__submit {
+    width: 220px;
+  }
 
-    &__header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        width: 100%;
-    }
+  &__tip {
+    width: 100%;
+    margin-bottom: 20px;
+    padding: 20px 24px;
 
-    &__submit {
-        width: 220px;
-    }
+    background: rgba(231, 45, 45, 0.1);
+    border-radius: 8px;
 
-    &__tip {
-        width: 100%;
-        margin-bottom: 20px;
-        padding: 20px 24px;
+    color: #ffffff;
+    line-height: 1.3;
+  }
 
-        background: rgba(231, 45, 45, 0.1);
-        border-radius: 8px;
+  &__tip a {
+    word-break: break-all;
+    font-family: $font-sb;
+    color: $red;
+  }
 
-        color: #ffffff;
-        line-height: 1.3;
-    }
+  &__input-wrapper {
+    width: 49%;
+    margin-bottom: 20px;
+  }
 
-    &__tip a {
-        word-break: break-all;
-        font-family: $font-sb;
-        color: $red;
-    }
+  &__input-wrapper--100 {
+    width: 100%;
+  }
 
-    &__input-wrapper {
-        width: 49%;
-        margin-bottom: 20px;
-    }
+  &__title {
+    width: 100%;
+    margin-bottom: 20px;
+  }
 
-    &__input-wrapper--100 {
-        width: 100%;
-    }
+  &__checkboxes {
+    display: flex;
+  }
 
-    &__title {
-        width: 100%;
-        margin-bottom: 20px;
-    }
+  &__checkbox:not(:first-child) {
+    margin-left: 28px;
+  }
 
-    &__checkboxes {
-        display: flex;
-    }
+  &__text {
+    width: 100%;
+    color: #fff;
+    line-height: 1.5;
+  }
 
-    &__checkbox:not(:first-child) {
-        margin-left: 28px;
-    }
+  &__title--mb {
+    margin-bottom: 20px;
+    margin-top: 20px;
+  }
 
-    &__text {
-        width: 100%;
-        color: #fff;
-        line-height: 1.5;
-    }
+  &__buttons {
+    display: flex;
+    width: 100%;
+  }
 
-    &__title--mb {
-        margin-bottom: 20px;
-        margin-top: 20px;
-    }
+  &__button {
+    width: 248px;
+  }
 
-    &__buttons {
-        display: flex;
-        width: 100%;
-    }
-
-    &__button {
-        width: 248px;
-    }
-
-    &__button:not(:first-child) {
-        margin-left: 20px;
-    }
+  &__button:not(:first-child) {
+    margin-left: 20px;
+  }
 }
 
 .form {
+  &--address &__button--header {
+    padding: 0 36px;
+  }
 
-    &--address &__button--header {
-        padding: 0 36px;
-    }
+  &--address &__input-wrapper {
+    width: 100%;
+    margin-top: 20px;
+  }
 
-    &--address &__input-wrapper {
-        width: 100%;
-        margin-top: 20px;
-    }
-
-    &--address &__submit {
-        margin-top: 28px;
-    }
+  &--address &__submit {
+    margin-top: 28px;
+  }
 }
 
 .form {
+  &--token &__input-wrapper--last {
+    margin-bottom: 28px;
+  }
 
-    &--token &__input-wrapper--last {
-        margin-bottom: 28px;
-    }
-
-    &--token &__submit {
-        flex-shrink: 0;
-        margin-right: 50%;
-    }
+  &--token &__submit {
+    flex-shrink: 0;
+    margin-right: 50%;
+  }
 }
 
 .form {
+  &--lock &__info {
+    width: 100%;
+    color: #fff;
+  }
 
-    &--lock &__info {
-        width: 100%;
-        color: #fff;
-    }
+  &--lock &__button {
+    width: 220px;
+    margin-top: 20px;
+  }
 
-    &--lock &__button {
-        width: 220px;
-        margin-top: 20px;
-    }
-
-    &--lock &__button:nth-child(n) {
-        margin-left: 0;
-    }
+  &--lock &__button:nth-child(n) {
+    margin-left: 0;
+  }
 }
 
 .form {
+  &--launchpad &__title {
+    font-size: 26px;
+  }
 
-    &--launchpad &__title {
-        font-size: 26px;
-    }
-
-    &--launchpad &__input-wrapper--last {
-        margin-bottom: 40px;
-    }
+  &--launchpad &__input-wrapper--last {
+    margin-bottom: 40px;
+  }
 }
 
 @media (max-width: 1219px) {
-
-    .form {
-
-        &--launchpad &__input-wrapper--first {
-            width: 100%;
-        }
+  .form {
+    &--launchpad &__input-wrapper--first {
+      width: 100%;
     }
+  }
 }
 
 @media (max-width: 767px) {
+  .form {
+    &__input-wrapper {
+      width: 100%;
+    }
+  }
 
-    .form {
-
-        &__input-wrapper {
-            width: 100%;
-        }
+  .form {
+    &--address &__submit {
+      width: 48%;
+      margin-top: 0;
     }
 
-    .form {
+    &--address &__button {
+      width: 48%;
+      margin-left: 0;
+    }
+  }
 
-        &--address &__submit {
-            width: 48%;
-            margin-top: 0;
-        }
-
-        &--address &__button {
-            width: 48%;
-            margin-left: 0;
-        }
+  .form {
+    &--token &__submit {
+      width: 100%;
+      margin-right: 0;
     }
 
-    .form {
+    &--token &__input-wrapper--last {
+      margin-bottom: 24px;
+    }
+  }
 
-        &--token &__submit {
-            width: 100%;
-            margin-right: 0;
-        }
-
-        &--token &__input-wrapper--last {
-            margin-bottom: 24px;
-        }
+  .form {
+    &--launchpad &__buttons {
+      justify-content: space-between;
     }
 
-    .form {
-
-        &--launchpad &__buttons {
-            justify-content: space-between;
-        }
-
-        &--launchpad &__button {
-            width: 48%;
-        }
-
-        &--launchpad &__button:not(:first-child) {
-            margin-left: 0;
-        }
+    &--launchpad &__button {
+      width: 48%;
     }
+
+    &--launchpad &__button:not(:first-child) {
+      margin-left: 0;
+    }
+  }
 }
 
 @media (max-width: 479px) {
+  .form {
+    padding: 24px 15px;
 
-    .form {
-        padding: 24px 15px;
-
-        &__tip {
-            padding: 10px 12px;
-        }
-
-        &__input-wrapper {
-            margin-bottom: 16px;
-        }
+    &__tip {
+      padding: 10px 12px;
     }
 
-    .form {
+    &__input-wrapper {
+      margin-bottom: 16px;
+    }
+  }
 
-        &--address &__button--header {
-            padding: 0 20px;
-        }
+  .form {
+    &--address &__button--header {
+      padding: 0 20px;
+    }
+  }
+
+  .form {
+    &--lock &__info {
+      text-align: center;
     }
 
-    .form {
-
-        &--lock &__info {
-            text-align: center;
-        }
-
-        &--lock &__button {
-            width: 100%;
-        }
+    &--lock &__button {
+      width: 100%;
     }
+  }
 }
 
 @media (max-width: 359px) {
-
-    .form {
-
-        &--address &__submit, &--address &__button {
-            height: 40px;
-            font-size: 12px;
-        }
+  .form {
+    &--address &__submit,
+    &--address &__button {
+      height: 40px;
+      font-size: 12px;
     }
+  }
+}
+
+.formContainer {
+  display: flex;
+  flex-direction: column;
+
+  .formButtons {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 20px;
+  }
 }

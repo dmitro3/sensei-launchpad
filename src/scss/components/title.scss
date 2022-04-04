@@ -1,72 +1,62 @@
 /*-------- Title --------*/
 
 .title {
-    font-family: $font-stx;
-    color: #ffffff;
+  font-family: $font-stx;
+  color: #ffffff;
 }
 
 .title {
-
-    &--home {
-        font-size: 44px;
-        text-align: center;
-    }
+  &--home {
+    font-size: 44px;
+    text-align: center;
+  }
 }
 
 .title {
-
-    &--form {
-        font-size: 26px;
-    }
+  &--form {
+    font-size: 26px;
+    margin-bottom: 15px;
+  }
 }
 
 .title {
-
-    &--page {
-        font-size: 32px;
-    }
+  &--page {
+    font-size: 32px;
+  }
 }
 
 @media (max-width: 767px) {
-
-    .title {
-
-        &--home {
-            font-size: 34px;
-        }
+  .title {
+    &--home {
+      font-size: 34px;
     }
+  }
 
-    .title {
-
-        &--page {
-            text-align: center;
-        }
+  .title {
+    &--page {
+      text-align: center;
     }
+  }
 }
 
 @media (max-width: 619px) {
-
-    .title {
-
-        &--home {
-            font-size: 30px;
-        }
+  .title {
+    &--home {
+      font-size: 30px;
     }
+  }
 
-    .title {
-
-        &--form {
-            font-size: 20px;
-        }
+  .title {
+    &--form {
+      font-size: 20px;
     }
+  }
 }
 
 @media (max-width: 479px) {
-
-    .title {
-
-        &--page {
-            font-size: 26px;
-        }
+  .title {
+    &--page {
+      font-size: 26px;
     }
+  }
 }
