@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Select from "./../../common/Select";
 import Input from "./../../common/Input";
 import Filter from "../../../Icons/Filter";
@@ -24,8 +24,13 @@ const sortArray = [
   { title: "Newest first", id: 4, selected: false },
 ];
 
-export default function LaunchpadList({ tokens }) {
+export default function LaunchpadList({ userTokens, getLaunchpads, tokens }) {
   const [search, setSearch] = useState("");
+  const [page, setPage] = useState(0);
+
+  useEffect(() => {
+    getLaunchpads();
+  }, []);
 
   return (
     <div className="catalog container">
@@ -33,22 +38,16 @@ export default function LaunchpadList({ tokens }) {
       <ul className="catalog__tabs">
         <li className="catalog__tabs-item">
           <button
-            className={
-              "catalog__tabs-button" +
-              (tokens === launchpadsArray ? " active" : "")
-            }
-            // onClick={() => setTokens(launchpadsArray)}
+            className={"catalog__tabs-button" + (page === 0 ? " active" : "")}
+            onClick={() => setPage(0)}
           >
             All Launchpads
           </button>
         </li>
         <li className="catalog__tabs-item">
           <button
-            className={
-              "catalog__tabs-button" +
-              (tokens === contributionsArray ? " active" : "")
-            }
-            // onClick={() => setTokens(contributionsArray)}
+            className={"catalog__tabs-button" + (page === 1 ? " active" : "")}
+            onClick={() => setPage(1)}
           >
             My Contributions
           </button>
@@ -74,13 +73,22 @@ export default function LaunchpadList({ tokens }) {
         />
       </div>
       <ul className="cards-list cards-list--catalog">
-        {tokens.map((item) => {
-          return (
-            <li className="cards-list__item" key={item.id}>
-              <TokenCard item={item} />
-            </li>
-          );
-        })}
+        {page === 0 &&
+          tokens.map((item) => {
+            return (
+              <li className="cards-list__item" key={item.id}>
+                <TokenCard item={item} />
+              </li>
+            );
+          })}
+        {page === 1 &&
+          userTokens.map((item) => {
+            return (
+              <li className="cards-list__item" key={item.id}>
+                <TokenCard item={item} />
+              </li>
+            );
+          })}
       </ul>
     </div>
   );

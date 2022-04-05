@@ -9,6 +9,21 @@
   display: flex;
   justify-content: center;
 }
+.tokenButtons {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
+.tokenDetails {
+  margin-bottom: 20px;
+}
+
+.lauchpadCreated {
+  margin-top: 10px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
 
 .form {
   display: flex;
@@ -144,7 +159,7 @@
 
   &--token &__submit {
     flex-shrink: 0;
-    margin-right: 50%;
+    // margin-right: 50%;
   }
 }
 

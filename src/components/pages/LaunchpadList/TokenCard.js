@@ -97,7 +97,9 @@ export default function TokenCard({ item }) {
           <div className="progress progress--card">
             <div className="progress__header">
               <h5 className="progress__title">Progress</h5>
-              <div className="progress__percentage">{item.progress}%</div>
+              <div className="progress__percentage">
+                {item.progress.toFixed(2)}%
+              </div>
             </div>
             <div className="progress__bar">
               <span

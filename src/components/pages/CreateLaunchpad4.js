@@ -12,7 +12,7 @@ import Form from "../common/Form";
 //   { title: "Standard token 3", selected: false, id: 2 },
 // ];
 
-export default function CreateLaunchpad4({ launchDetails }) {
+export default function CreateLaunchpad4({ launchpadCreated, launchDetails }) {
   const getData = (time) => {
     let data = new Date(time * 1000).toString();
     let split = data.split(" ");
@@ -82,6 +82,13 @@ export default function CreateLaunchpad4({ launchDetails }) {
             <h1>{launchDetails.liquidityPerc}%</h1>
           </div>
         </div>
+        <br />
+
+        {launchpadCreated.tx && (
+          <div className="lauchpadCreated">
+            <h2 className="title title--form">Launchpad was created!</h2>
+          </div>
+        )}
       </Form>
     </div>
   );

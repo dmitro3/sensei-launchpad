@@ -4,7 +4,7 @@ import Step2 from "./CreateLaunchpad2";
 import Step3 from "./CreateLaunchpad3";
 import Step4 from "./CreateLaunchpad4";
 import Steps from "../common/Steps";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useMoralisWeb3Api } from "react-moralis";
 import {
   checkAllowance,
@@ -15,6 +15,7 @@ import { create } from "ipfs-http-client";
 
 export default function CreateLaunchpad() {
   const navigate = useNavigate();
+  let { id } = useParams();
   const client = create("https://ipfs.infura.io:5001/api/v0");
   const Web3Api = useMoralisWeb3Api();
   const [isLoading, setIsLoading] = useState(false);
@@ -50,6 +51,10 @@ export default function CreateLaunchpad() {
     discord: "",
     reddit: "",
     description: "",
+  });
+  const [launchpadCreated, setLaunchpadCreated] = useState({
+    address: "",
+    tx: "",
   });
 
   const uploadInfo = async () => {
@@ -130,8 +135,11 @@ export default function CreateLaunchpad() {
     let receipt = await createLaunchpad(launchDetails);
 
     if (receipt) {
-      console.log(receipt);
-      navigate("/launchpad_list");
+      let address = receipt.events[0].address;
+      let tx = receipt.transactionHash;
+      setLaunchpadCreated({ ...launchpadCreated, address, tx });
+
+      // navigate("/launchpad_list");
     }
     setIsLoading(false);
   };
@@ -139,6 +147,15 @@ export default function CreateLaunchpad() {
   useEffect(() => {
     checkTokenAddress();
   }, [launchDetails.tokenAddress]);
+
+  useEffect(() => {
+    if (id) {
+      setLaunchDetails({
+        ...launchDetails,
+        tokenAddress: id,
+      });
+    }
+  }, []);
 
   return (
     <div className="launch container formContainer">
@@ -169,6 +186,7 @@ export default function CreateLaunchpad() {
       )}
       {step === 4 && (
         <Step4
+          launchpadCreated={launchpadCreated}
           launchDetails={launchDetails}
           setLaunchDetails={setLaunchDetails}
           inputInfo="Create pool fee: 1 BNB"
@@ -190,6 +208,8 @@ export default function CreateLaunchpad() {
               ? handleApprove
               : step === 3
               ? uploadInfo
+              : launchpadCreated.tx
+              ? () => navigate("/launchpad_list")
               : step === 4
               ? handleCreate
               : () => setStep(step + 1)
@@ -201,6 +221,8 @@ export default function CreateLaunchpad() {
             ? launchDetails.isAllowed
               ? "Next"
               : "Approve Token"
+            : launchpadCreated.tx
+            ? "See Launchpads"
             : step === 4
             ? "Create"
             : "Next"}

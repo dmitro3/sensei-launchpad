@@ -21,7 +21,11 @@ import Header from "./components/Header";
 import useSmallScreen from "./hooks/useSmallScreen";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import Web3 from "web3";
-import { launchpadDetails, nativeBalance } from "./blockchain/functions";
+import {
+  launchpadDetails,
+  nativeBalance,
+  getUserContributions,
+} from "./blockchain/functions";
 
 function App() {
   const [popupShow, setPopupShow] = useState(false);
@@ -29,6 +33,7 @@ function App() {
   const smallScreen = useSmallScreen(990);
   const [menuVisible, setMenuVisible] = useState(false);
   const [tokens, setTokens] = useState([]);
+  const [userTokens, setUserTokens] = useState([]);
   const [userAddress, setUserAddress] = useState("");
   const [walletType, setWalletType] = useState("");
   const [walletProvider, setWalletProvider] = useState();
@@ -122,26 +127,51 @@ function App() {
     }
   };
 
-  useEffect(() => {
-    const getLaunchpads = async () => {
-      let receipt = await launchpadDetails();
-      if (receipt) {
-        setTokens(receipt);
+  const getContributions = async () => {
+    if (userAddress) {
+      let contributions = await getUserContributions(userAddress);
+      if (contributions) {
+        let temp = [];
+        contributions[0].map((el, index) => {
+          let item = tokens.find((i) => i.id === Number(el));
+          console.log(item, "item");
+          if (item) {
+            let index = tokens.findIndex((i) => i.id === Number(el));
+            tokens[index].userContribution = contributions[1][index];
+            item.userContribution = contributions[1][index];
+            temp.push(item);
+          }
+        });
+        console.log(temp, "temp");
+        setUserTokens(temp);
       }
-    };
 
+      console.log("contributions", contributions);
+    }
+  };
+
+  const getLaunchpads = async () => {
+    let receipt = await launchpadDetails();
+    if (receipt) {
+      setTokens(receipt);
+    }
+  };
+
+  useEffect(() => {
     let user = window.localStorage.getItem("userAddress");
 
     if (user) {
       connectMetamask();
     }
-
-    getLaunchpads();
   }, []);
 
   useEffect(() => {
     getUserInfo();
   }, [userAddress]);
+
+  useEffect(() => {
+    getContributions();
+  }, [tokens]);
 
   useEffect(() => {
     if (menuVisible) {
@@ -171,6 +201,17 @@ function App() {
             path="/create_launchpad"
             element={
               <CreateLaunchpad
+                getLaunchpads={getLaunchpads}
+                userAddress={userAddress}
+                setPopupShow={setPopupShow}
+              />
+            }
+          />
+          <Route
+            path="/create_launchpad/:id"
+            element={
+              <CreateLaunchpad
+                getLaunchpads={getLaunchpads}
                 userAddress={userAddress}
                 setPopupShow={setPopupShow}
               />
@@ -180,7 +221,13 @@ function App() {
           <Route path="/create_token" element={<CreateToken />} />
           <Route
             path="/launchpad_list"
-            element={<LaunchpadList tokens={tokens} />}
+            element={
+              <LaunchpadList
+                userTokens={userTokens}
+                getLaunchpads={getLaunchpads}
+                tokens={tokens}
+              />
+            }
           />
           <Route
             path="/launchpad_list/:id"

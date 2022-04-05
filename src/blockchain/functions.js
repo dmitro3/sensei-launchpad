@@ -1,7 +1,13 @@
 import { ethers, providers } from "ethers";
-import { deployerABI, launchpadABI } from "./abis";
-import WalletConnectProvider from "@walletconnect/web3-provider";
+import {
+  deployerABI,
+  launchpadABI,
+  liquidityTokenAbi,
+  standardTokenAbi,
+} from "./abis";
+import { liquidityTokenByte, standardTokenByte } from "./bytecode";
 import axios from "axios";
+import senseiLogo from "../img/common/notFound.png";
 
 let tokenAbi = [
   "function allowance(address owner, address spender) external view returns (uint256)",
@@ -14,7 +20,7 @@ let provider = new ethers.providers.JsonRpcProvider(
   "https://data-seed-prebsc-2-s2.binance.org:8545/"
 );
 
-let deployerAddress = "0x1b895fC1Fe44310c8718d6397b284e6421C223F2";
+let deployerAddress = "0x626B2a2386BDdd31a2eAEef70Be63187d4E1D908";
 
 let deployerContract = new ethers.Contract(
   deployerAddress,
@@ -22,7 +28,71 @@ let deployerContract = new ethers.Contract(
   provider
 );
 
-// createLaunchpad(uint256 [] memory _prices, uint256 [] memory _caps, uint256 [] memory _limits, uint256 [] memory _times, uint256 _lockupPeriod, uint256 _liquidityPerc, string memory _URIData, address _token, bool whitelist) public{
+export const deployToken = async (type, params, walletType, walletProvider) => {
+  try {
+    let signer = await getSigner(walletType, walletProvider);
+    let abi;
+    let bytecode;
+    let args;
+    let {
+      name,
+      symbol,
+      decimals,
+      totalSupply,
+      charityAddress,
+      taxFeeBps,
+      liquidityFeeBps,
+      charityFeeBps,
+    } = params;
+
+    if (type === 0) {
+      abi = standardTokenAbi;
+      bytecode = standardTokenByte;
+      args = [
+        name,
+        symbol,
+        decimals,
+        ethers.utils.parseUnits(totalSupply, decimals),
+      ];
+    } else if (type === 1) {
+      abi = liquidityTokenAbi;
+      bytecode = liquidityTokenByte;
+      args = [
+        name,
+        symbol,
+        ethers.utils.parseUnits(totalSupply, 9),
+        "0x9Ac64Cc6e4415144C455BD8E4837Fea55603e5c3",
+        charityAddress,
+        ethers.utils.parseUnits(taxFeeBps, 2),
+        ethers.utils.parseUnits(liquidityFeeBps, 2),
+        ethers.utils.parseUnits(charityFeeBps, 2),
+      ];
+    }
+
+    // The factory we use for deploying contracts
+    let factory = new ethers.ContractFactory(abi, bytecode, signer);
+
+    let value = ethers.utils.parseUnits("0.01", "ether");
+
+    // Deploy an instance of the contract
+    let contract = await factory.deploy(
+      ...args,
+      "0x153B202F6C6e570f13C27371CdA6Ae2c8768Dca6",
+      value,
+      { value }
+    );
+
+    let receipt = await contract.deployTransaction.wait();
+    console.log("finish", receipt);
+
+    return receipt;
+  } catch (error) {
+    console.log(error, "deployLiquidityToken");
+    if (error.data) {
+      window.alert(error.data.message);
+    }
+  }
+};
 
 export const launchpadSchema = {
   name: "",
@@ -64,15 +134,18 @@ export const launchpadSchema = {
   listPrice: "",
   buy: "",
   sold: "",
+  status: "",
   tokenForSale: "",
   tokenForLiquidity: "",
   launchpadAddress: "",
   values: [],
+  userContribution: 0,
 };
 
 export const launchpadDetails = async () => {
   try {
     let count = await deployerContract.launchpadCount();
+
     let data = [];
 
     for (let i = 0; i < count; i++) {
@@ -87,9 +160,67 @@ export const launchpadDetails = async () => {
   }
 };
 
+export const getUserContributions = async (userAddress) => {
+  try {
+    let contributions = await deployerContract.getUserContributions(
+      userAddress
+    );
+
+    return contributions;
+  } catch (error) {
+    console.log(error, "getUserContributions");
+  }
+};
+
 export const getLaunchpadInfo = async (id) => {
   try {
-    let newData = launchpadSchema;
+    let newData = {
+      name: "",
+      image: "",
+      desc: "",
+      likes: 0,
+      audited: false,
+      verified: false,
+      bnbPrice: 0,
+      cap: [0, 0],
+      progress: 0,
+      liquidity: 0,
+      lockup: 0,
+      cancelled: false,
+      startDate: 0,
+      endDate: 0,
+      category: "",
+      score: 0,
+      kyc: false,
+      size: "",
+      locked: "",
+      lockPeriod: "",
+      lockDuration: "",
+      audit: "",
+      website: "",
+      social: { tg: "/", twitter: "/" },
+      utility: "",
+      privateSale: "",
+      vesting: "",
+      ratio: "",
+      voteScore: "",
+      level: "",
+      id: "",
+      admin: "",
+      address: "",
+      symbol: "",
+      decimals: "",
+      maxSupply: "",
+      listPrice: "",
+      buy: "",
+      sold: "",
+      tokenForSale: "",
+      tokenForLiquidity: "",
+      launchpadAddress: "",
+      status: "",
+      values: [],
+      userContribution: 0,
+    };
 
     let launchpadData = await deployerContract.getInfo(id);
     let extraData;
@@ -100,12 +231,11 @@ export const getLaunchpadInfo = async (id) => {
     } catch (error) {
       console.log(error, "axios");
     }
-    console.log(launchpadData, "launchpad data", extraData, "extra data");
 
     newData.symbol = launchpadData.symbol[0];
     newData.name = launchpadData.symbol[1];
     newData.decimals = launchpadData.decimals;
-    newData.image = extraData.logo;
+    newData.image = extraData.logo ? extraData.logo : senseiLogo;
     newData.maxSupply = launchpadData.data[12] / 10 ** launchpadData.decimals;
     newData.desc = extraData.description;
     newData.bnbPrice = launchpadData.data[0] / 10000;
@@ -126,6 +256,7 @@ export const getLaunchpadInfo = async (id) => {
     newData.tokenForLiquidity =
       (newData.listPrice * newData.cap[1] * newData.liquidity) / 100 / 10 ** 18;
     newData.cancelled = launchpadData._status === 2;
+    newData.status = launchpadData._status;
     newData.startDate = launchpadData.data[6] * 1000;
     newData.endDate = launchpadData.data[7] * 1000;
     newData.website = extraData.website;
@@ -166,6 +297,9 @@ export const getLaunchpadInfo = async (id) => {
     newData.id = id;
     newData.audited = true;
     newData.verified = true;
+    newData.userContribution = 0;
+
+    console.log(launchpadData, "launchpad data", newData, "new data");
 
     return newData;
   } catch (error) {
@@ -189,6 +323,42 @@ export const buy = async (
     let value = ethers.utils.parseUnits(_amount, "ether");
 
     let tx = await contractInstance.buy({ value });
+
+    let receipt = await tx.wait();
+
+    return receipt;
+  } catch (error) {
+    console.log(error);
+    if (error.data) {
+      window.alert(error.data.message);
+    }
+  }
+};
+
+export const finishSale = async (
+  type,
+  launchAddress,
+  walletType,
+  walletProvider
+) => {
+  try {
+    let contractInstance = await launchpadContractInstance(
+      launchAddress,
+      walletType,
+      walletProvider
+    );
+    let tx;
+
+    switch (type) {
+      case "CANCEL":
+        tx = await contractInstance.cancelSale();
+        break;
+      case "FINISH":
+        tx = await contractInstance.finishSale();
+        break;
+      case "CLAIM":
+        tx = await contractInstance.claim();
+    }
 
     let receipt = await tx.wait();
 
@@ -375,5 +545,16 @@ const launchpadContractInstance = async (
     let signer = newProvider.getSigner(0);
 
     return new ethers.Contract(launchAddress, launchpadABI, signer);
+  }
+};
+
+const getSigner = async (walletType, walletProvider) => {
+  if (walletType === "WALLET_CONNECT") {
+    const web3Provider = new providers.Web3Provider(walletProvider);
+
+    return web3Provider.getSigner(0);
+  } else {
+    let newProvider = new ethers.providers.Web3Provider(window.ethereum);
+    return newProvider.getSigner(0);
   }
 };

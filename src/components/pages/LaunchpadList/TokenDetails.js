@@ -17,7 +17,11 @@ import Google from "./../../../Icons/Google";
 import ArrowFilled from "./../../../Icons/ArrowFilled";
 import useSmallScreen from "./../../../hooks/useSmallScreen";
 import truncate from "../../../services/truncate";
-import { buy, getLaunchpadInfo } from "../../../blockchain/functions";
+import {
+  buy,
+  getLaunchpadInfo,
+  finishSale,
+} from "../../../blockchain/functions";
 
 const sortArray = [
   { title: "Sort by best", id: 0, selected: true },
@@ -35,7 +39,9 @@ export default function TokenDetails({
   tokens,
 }) {
   let { id } = useParams();
-  const [token, setToken] = useState(tokens[id] || launchpadsArray[0]);
+  const [token, setToken] = useState(
+    tokens.find((el) => el.id === Number(id)) || launchpadsArray[0]
+  );
   const [value, setValue] = useState("");
   const [comment, setComment] = useState("");
   const [chart, setChart] = useState([]);
@@ -55,6 +61,23 @@ export default function TokenDetails({
       let info = await getLaunchpadInfo(id);
       if (info) {
         setToken({ ...token, sold: info.sold, progress: info.progress });
+      }
+    }
+  };
+
+  const handleFinish = async (type) => {
+    let receipt = await finishSale(
+      type,
+      token.launchpadAddress,
+      walletType,
+      walletProvider
+    );
+    if (receipt) {
+      console.log(receipt);
+      getUserInfo();
+      let info = await getLaunchpadInfo(id);
+      if (info) {
+        setToken({ ...token, status: info.status });
       }
     }
   };
@@ -328,18 +351,65 @@ export default function TokenDetails({
                 </span>
               </div>
             </div>
-            <h6>Amount</h6>
-            <BalanceInput
-              userBalance={userBalance}
-              value={value}
-              onChange={(e) => setValue(e)}
-            />
-            <button
-              onClick={!userAddress ? () => setPopupShow(true) : handleBuy}
-              className="button button--red details__button"
-            >
-              Buy
-            </button>
+            {token.admin.toLowerCase() === userAddress.toLowerCase() ? (
+              <>
+                <h6>Admin Zone</h6>
+                <button
+                  disabled={token.status !== 0 || token.cancelled}
+                  onClick={
+                    !userAddress
+                      ? () => setPopupShow(true)
+                      : () => handleFinish("CANCEL")
+                  }
+                  className="button button--red details__button"
+                >
+                  Cancel Sale
+                </button>
+                <button
+                  disabled={token.endDate > Date.now() || token.cancelled}
+                  onClick={
+                    !userAddress
+                      ? () => setPopupShow(true)
+                      : () => handleFinish("FINISH")
+                  }
+                  className="button button--red details__button"
+                >
+                  Finish Sale
+                </button>
+              </>
+            ) : token.cancelled || token.status === 1 ? (
+              <>
+                <p className="input-wrapper__text">
+                  Balance: {(userBalance / 10 ** 18).toFixed(4)} BNB
+                </p>
+                <button
+                  onClick={
+                    !userAddress
+                      ? () => setPopupShow(true)
+                      : () => handleFinish("CLAIM")
+                  }
+                  className="button button--red details__button"
+                >
+                  Claim
+                </button>
+              </>
+            ) : (
+              <>
+                <h6>Amount</h6>
+                <BalanceInput
+                  userBalance={userBalance}
+                  value={value}
+                  onChange={(e) => setValue(e)}
+                />
+                <button
+                  disabled={token.status === 0}
+                  onClick={!userAddress ? () => setPopupShow(true) : handleBuy}
+                  className="button button--red details__button"
+                >
+                  Buy
+                </button>
+              </>
+            )}
           </div>
         </div>
         <div className="details__wrapper">
