@@ -25,6 +25,7 @@ import {
   launchpadDetails,
   nativeBalance,
   getUserContributions,
+  checkLP,
 } from "./blockchain/functions";
 import store from "store2";
 
@@ -261,7 +262,16 @@ function App() {
               />
             }
           />
-          <Route path="/create_lock" element={<CreateLock />} />
+          <Route
+            path="/create_lock"
+            element={
+              <CreateLock
+                userAddress={userAddress}
+                walletType={walletType}
+                walletProvider={walletProvider}
+              />
+            }
+          />
           <Route path="/tokens" element={<Tokens />} />
           <Route path="/tokens/:id" element={<ItemDetails />} />
           <Route path="/liquidity" element={<Liquidity />} />

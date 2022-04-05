@@ -106,7 +106,8 @@ export default function CreateLaunchpad({ userAddress }) {
     console.log(userAddress, "address");
     let allowance = await checkAllowance(
       userAddress,
-      launchDetails.tokenAddress
+      launchDetails.tokenAddress,
+      "DEPLOYER"
     );
     if (update) {
       setLaunchDetails({

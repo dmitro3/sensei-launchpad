@@ -4,6 +4,8 @@ import {
   launchpadABI,
   liquidityTokenAbi,
   standardTokenAbi,
+  lockerAbi,
+  pairAbi,
 } from "./abis";
 import { liquidityTokenByte, standardTokenByte } from "./bytecode";
 import axios from "axios";
@@ -21,12 +23,112 @@ let provider = new ethers.providers.JsonRpcProvider(
 );
 
 let deployerAddress = "0x952E18F96ee5CaEd8c73FfF63b7FD6f8057A657a";
+let lockerAddress = "0x36E77ce59Bfe0ACc00B772F7C906b644Df06CE89";
 
 let deployerContract = new ethers.Contract(
   deployerAddress,
   deployerABI,
   provider
 );
+
+let lockerContract = new ethers.Contract(lockerAddress, lockerAbi, provider);
+
+// allNormalTokenLockedCount
+// getCumulativeNormalTokenLockInfo
+
+// getCumulativeLpTokenLockInfo
+// allLpTokenLockedCount
+
+export const getNormalTokensLock = async () => {
+  // { "Token": { name: "AAVE", icon: aaveIcon }, "Symbol": "AAVE", "Amount": "12.000.000.000", "Token Address": "0x5617...bf9", "Action": "/tokens/1", id: 1 },
+  try {
+    let count = await lockerContract.allNormalTokenLockedCount();
+
+    let data = await lockerContract.getCumulativeNormalTokenLockInfo(
+      "0",
+      count
+    );
+
+    // for (let i = 0; i < count; i++) {
+    //   let newData = await getLaunchpadInfo(i);
+    //   data.unshift(newData);
+    // }
+
+    console.log(data);
+    return data;
+  } catch (error) {
+    console.log(error, "getNormalTokensLock");
+  }
+};
+
+export const getLPTokensLock = async () => {
+  try {
+    let count = await lockerContract.allLpTokenLockedCount();
+
+    let data = await lockerContract.getCumulativeLpTokenLockInfo("0", count);
+
+    // for (let i = 0; i < count; i++) {
+    //   let newData = await getLaunchpadInfo(i);
+    //   data.unshift(newData);
+    // }
+
+    console.log(data);
+    return data;
+  } catch (error) {
+    console.log(error, "getLPTokensLock");
+  }
+};
+
+const getLocksInfo = async () => {};
+
+export const lock = async (params, walletType, walletProvider) => {
+  try {
+    let signer = await getSigner(walletType, walletProvider);
+
+    let lockerInstance = new ethers.Contract(lockerAddress, lockerAbi, signer);
+
+    let tx = await lockerInstance.lock(...params);
+
+    let receipt = await tx.wait();
+
+    return receipt;
+  } catch (error) {
+    console.log(error);
+    if (error.data) {
+      window.alert(error.data.message);
+    }
+  }
+};
+
+export const checkLP = async (_address) => {
+  try {
+    let contract = new ethers.Contract(_address, pairAbi, provider);
+
+    let factory = await contract.factory();
+    let symbol0 = await getTokenSymbol(await contract.token0());
+    let symbol1 = await getTokenSymbol(await contract.token1());
+    let pair = `${symbol0}/${symbol1}`;
+
+    return { factory, pair };
+  } catch (error) {
+    return false;
+  }
+};
+
+export const checkTokenBalance = async (_address, userAddress) => {
+  try {
+    let contract = new ethers.Contract(_address, pairAbi, provider);
+
+    let balance = await contract.balanceOf(userAddress);
+
+    let decimals = await contract.decimals();
+    let realBalance = await ethers.utils.formatEther(balance, decimals);
+
+    return realBalance;
+  } catch (error) {
+    return false;
+  }
+};
 
 export const deployToken = async (type, params, walletType, walletProvider) => {
   try {
@@ -475,11 +577,51 @@ export const approveDeployer = async (
   }
 };
 
-export const checkAllowance = async (userAddress, tokenAddress) => {
+export const approveLocker = async (
+  tokenAddress,
+  walletType,
+  walletProvider
+) => {
   try {
+    let instance = await tokenContractInstance(
+      tokenAddress,
+      walletType,
+      walletProvider
+    );
+
+    let tx = await instance.approve(
+      lockerAddress,
+      "115792089237316195423570985008687907853269984665640564039457584007913129639935",
+      { gasLimit: 100000 }
+    );
+
+    let receipt = await tx.wait();
+
+    return receipt;
+  } catch (error) {
+    console.log(error, "approveDeployer");
+    if (error.data) {
+      window.alert(error.data.message);
+    }
+  }
+};
+
+export const checkAllowance = async (userAddress, tokenAddress, _operator) => {
+  try {
+    let operator = "";
+    switch (_operator) {
+      case "DEPLOYER":
+        operator = deployerAddress;
+        break;
+      case "LOCKER":
+        operator = lockerAddress;
+        break;
+      default:
+        break;
+    }
     let tokenInstance = new ethers.Contract(tokenAddress, tokenAbi, provider);
 
-    let receipt = await tokenInstance.allowance(userAddress, deployerAddress);
+    let receipt = await tokenInstance.allowance(userAddress, operator);
 
     return receipt > 0;
   } catch (error) {
@@ -558,5 +700,17 @@ const getSigner = async (walletType, walletProvider) => {
   } else {
     let newProvider = new ethers.providers.Web3Provider(window.ethereum);
     return newProvider.getSigner(0);
+  }
+};
+
+const getTokenSymbol = async (_address) => {
+  try {
+    let contract = new ethers.Contract(_address, standardTokenAbi, provider);
+
+    let symbol = await contract.symbol();
+
+    return symbol;
+  } catch (error) {
+    return "";
   }
 };
