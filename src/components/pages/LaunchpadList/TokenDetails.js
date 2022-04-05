@@ -21,6 +21,7 @@ import {
   buy,
   getLaunchpadInfo,
   finishSale,
+  getUserContributions,
 } from "../../../blockchain/functions";
 
 const sortArray = [
@@ -47,8 +48,10 @@ export default function TokenDetails({
   const [chart, setChart] = useState([]);
   const smallScreen = useSmallScreen(1220);
   const mobileScreen = useSmallScreen(480);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleBuy = async () => {
+    setIsLoading(true);
     let receipt = await buy(
       value,
       token.launchpadAddress,
@@ -59,13 +62,23 @@ export default function TokenDetails({
       console.log(receipt);
       getUserInfo();
       let info = await getLaunchpadInfo(id);
+      let contributions = await getUserContributions(userAddress);
       if (info) {
-        setToken({ ...token, sold: info.sold, progress: info.progress });
+        let index = contributions[0].findIndex((e) => Number(e) === Number(id));
+        console.log("contribution", contributions[1][index]);
+        setToken({
+          ...token,
+          sold: info.sold,
+          progress: info.progress,
+          userContribution: contributions[1][index],
+        });
       }
     }
+    setIsLoading(false);
   };
 
   const handleFinish = async (type) => {
+    setIsLoading(true);
     let receipt = await finishSale(
       type,
       token.launchpadAddress,
@@ -80,6 +93,7 @@ export default function TokenDetails({
         setToken({ ...token, status: info.status });
       }
     }
+    setIsLoading(false);
   };
 
   const getInfo = async () => {
@@ -355,7 +369,7 @@ export default function TokenDetails({
               <>
                 <h6>Admin Zone</h6>
                 <button
-                  disabled={token.status !== 0 || token.cancelled}
+                  disabled={token.status !== 0 || token.cancelled || isLoading}
                   onClick={
                     !userAddress
                       ? () => setPopupShow(true)
@@ -366,7 +380,9 @@ export default function TokenDetails({
                   Cancel Sale
                 </button>
                 <button
-                  disabled={token.endDate > Date.now() || token.cancelled}
+                  disabled={
+                    token.endDate > Date.now() || token.cancelled || isLoading
+                  }
                   onClick={
                     !userAddress
                       ? () => setPopupShow(true)
@@ -383,6 +399,7 @@ export default function TokenDetails({
                   Balance: {(userBalance / 10 ** 18).toFixed(4)} BNB
                 </p>
                 <button
+                  disabled={isLoading}
                   onClick={
                     !userAddress
                       ? () => setPopupShow(true)
@@ -395,14 +412,25 @@ export default function TokenDetails({
               </>
             ) : (
               <>
-                <h6>Amount</h6>
+                {Number(token.userContribution > 0) ? (
+                  <>
+                    <h6>
+                      Your Contribution:
+                      {(token.userContribution / 10 ** 18).toFixed(2)} BNB
+                    </h6>
+                    <br />
+                  </>
+                ) : (
+                  ""
+                )}
+
                 <BalanceInput
                   userBalance={userBalance}
                   value={value}
                   onChange={(e) => setValue(e)}
                 />
                 <button
-                  disabled={token.status === 0}
+                  disabled={token.endDate < Date.now() || isLoading}
                   onClick={!userAddress ? () => setPopupShow(true) : handleBuy}
                   className="button button--red details__button"
                 >

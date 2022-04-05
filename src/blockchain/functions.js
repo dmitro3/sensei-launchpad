@@ -20,7 +20,7 @@ let provider = new ethers.providers.JsonRpcProvider(
   "https://data-seed-prebsc-2-s2.binance.org:8545/"
 );
 
-let deployerAddress = "0x626B2a2386BDdd31a2eAEef70Be63187d4E1D908";
+let deployerAddress = "0x952E18F96ee5CaEd8c73FfF63b7FD6f8057A657a";
 
 let deployerContract = new ethers.Contract(
   deployerAddress,
@@ -192,6 +192,7 @@ export const getLaunchpadInfo = async (id) => {
       category: "",
       score: 0,
       kyc: false,
+      audit: false,
       size: "",
       locked: "",
       lockPeriod: "",
@@ -249,6 +250,7 @@ export const getLaunchpadInfo = async (id) => {
       Number(launchpadData.data[5]),
     ];
     newData.sold = Number(launchpadData.data[10]);
+    newData.likes = Number(launchpadData.data[11]);
     newData.progress = (launchpadData.data[10] * 100) / newData.cap[1];
     newData.liquidity = Number(launchpadData.data[9]);
     newData.lockup = Number(launchpadData.data[8]);

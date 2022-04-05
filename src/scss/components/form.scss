@@ -25,6 +25,14 @@
   justify-content: center;
 }
 
+.loading-block {
+  margin-top: 20px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  color: $red;
+}
+
 .form {
   display: flex;
   flex-wrap: wrap;

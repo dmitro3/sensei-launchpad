@@ -145,7 +145,7 @@ export default function TokenCard({ item }) {
               <span>KYC/DOXXED</span>
               <span>{`${item.kyc}`}</span>
             </li>
-            <li className="card__item">
+            {/* <li className="card__item">
               <span>Team Wallet Size</span>
               <span>{item.size}</span>
             </li>
@@ -160,34 +160,44 @@ export default function TokenCard({ item }) {
             <li className="card__item">
               <span>LP Lock Duration</span>
               <span>{item.lockDuration}</span>
-            </li>
+            </li> */}
             <li className="card__item">
               <span>Audit</span>
               <span>{`${item.audit}`}</span>
             </li>
             <li className="card__item">
               <span>Website</span>
-              <button className="card__copy">{item.website}</button>
+              <a target="_blank" href={item.website} className="card__copy">
+                {item.website}
+              </a>
             </li>
             <li className="card__item">
               <span>Social Media</span>
               <ul className="card__social social social--card">
                 <li className="social__item">
-                  <a href={item.social.tg} className="social__link">
+                  <a
+                    target="_blank"
+                    href={item.social.tg}
+                    className="social__link"
+                  >
                     <Telegram className="social__icon" />
                   </a>
                 </li>
                 <li className="social__item">
-                  <a href={item.social.twitter} className="social__link">
+                  <a
+                    target="_blank"
+                    href={item.social.twitter}
+                    className="social__link"
+                  >
                     <Twitter className="social__icon" />
                   </a>
                 </li>
               </ul>
             </li>
-            <li className="card__item">
+            {/* <li className="card__item">
               <span>Utility</span>
               <span>{item.utility}</span>
-            </li>
+            </li> */}
             <li className="card__item">
               <span>Private Sale</span>
               <span>{`${item.privateSale}`}</span>
@@ -197,7 +207,7 @@ export default function TokenCard({ item }) {
               <span>{item.vesting}</span>
             </li>
             <li className="card__item">
-              <span>lP Ratio</span>
+              <span>LP Ratio</span>
               <span>{item.ratio}</span>
             </li>
             <li className="card__item">

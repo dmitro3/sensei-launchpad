@@ -13,7 +13,7 @@ import {
 } from "../../blockchain/functions";
 import { create } from "ipfs-http-client";
 
-export default function CreateLaunchpad() {
+export default function CreateLaunchpad({ userAddress }) {
   const navigate = useNavigate();
   let { id } = useParams();
   const client = create("https://ipfs.infura.io:5001/api/v0");
@@ -103,8 +103,9 @@ export default function CreateLaunchpad() {
   };
 
   const checkTokenAllowance = async (update) => {
+    console.log(userAddress, "address");
     let allowance = await checkAllowance(
-      "0x153B202F6C6e570f13C27371CdA6Ae2c8768Dca6",
+      userAddress,
       launchDetails.tokenAddress
     );
     if (update) {

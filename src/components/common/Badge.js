@@ -5,6 +5,8 @@ export default function Badge({ item, className }) {
         "badge " +
         (item.cancelled
           ? "cancelled "
+          : item.status === 1
+          ? "claiming"
           : item.startDate < Date.now()
           ? item.endDate < Date.now()
             ? "finished"
@@ -15,6 +17,8 @@ export default function Badge({ item, className }) {
     >
       {item.cancelled
         ? "Cancelled"
+        : item.status === 1
+        ? "Claiming"
         : item.startDate < Date.now()
         ? item.endDate < Date.now()
           ? "Sale Ended"

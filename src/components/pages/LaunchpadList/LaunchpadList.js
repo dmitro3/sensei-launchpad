@@ -24,7 +24,12 @@ const sortArray = [
   { title: "Newest first", id: 4, selected: false },
 ];
 
-export default function LaunchpadList({ userTokens, getLaunchpads, tokens }) {
+export default function LaunchpadList({
+  launchpadsLoading,
+  userTokens,
+  getLaunchpads,
+  tokens,
+}) {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(0);
 
@@ -72,6 +77,11 @@ export default function LaunchpadList({ userTokens, getLaunchpads, tokens }) {
           placeholder="Search..."
         />
       </div>
+      {launchpadsLoading && (
+        <div className="loading-block">
+          <h1>Loading last launchpads...</h1>
+        </div>
+      )}
       <ul className="cards-list cards-list--catalog">
         {page === 0 &&
           tokens.map((item) => {

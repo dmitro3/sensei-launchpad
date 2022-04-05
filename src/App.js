@@ -26,6 +26,7 @@ import {
   nativeBalance,
   getUserContributions,
 } from "./blockchain/functions";
+import store from "store2";
 
 function App() {
   const [popupShow, setPopupShow] = useState(false);
@@ -38,6 +39,7 @@ function App() {
   const [walletType, setWalletType] = useState("");
   const [walletProvider, setWalletProvider] = useState();
   const [userBalance, setUserBalance] = useState("");
+  const [launchpadsLoading, setLaunchpadsLoading] = useState(false);
 
   const connectMetamask = async () => {
     console.log("hola");
@@ -112,8 +114,9 @@ function App() {
         infuraId: null,
       });
       await provider.disconnect();
-    } else {
     }
+
+    store.remove("userLaunchpads");
 
     setUserAddress("");
   };
@@ -136,13 +139,15 @@ function App() {
           let item = tokens.find((i) => i.id === Number(el));
           console.log(item, "item");
           if (item) {
-            let index = tokens.findIndex((i) => i.id === Number(el));
-            tokens[index].userContribution = contributions[1][index];
+            let indexInToken = tokens.findIndex((i) => i.id === Number(el));
+            tokens[indexInToken].userContribution = contributions[1][index];
             item.userContribution = contributions[1][index];
             temp.push(item);
           }
         });
         console.log(temp, "temp");
+        store.set("userLaunchpads", temp);
+        store.set("launchpads", tokens);
         setUserTokens(temp);
       }
 
@@ -151,14 +156,22 @@ function App() {
   };
 
   const getLaunchpads = async () => {
+    setLaunchpadsLoading(true);
     let receipt = await launchpadDetails();
     if (receipt) {
+      store.set("launchpads", receipt);
       setTokens(receipt);
     }
+    setLaunchpadsLoading(false);
   };
 
   useEffect(() => {
     let user = window.localStorage.getItem("userAddress");
+    let storedLaunchpads = store.get("launchpads");
+
+    if (storedLaunchpads) {
+      setTokens(storedLaunchpads);
+    }
 
     if (user) {
       connectMetamask();
@@ -166,6 +179,10 @@ function App() {
   }, []);
 
   useEffect(() => {
+    let userLaunchs = store.get("userLaunchpads");
+    if (userLaunchs) {
+      setUserTokens(userLaunchs);
+    }
     getUserInfo();
   }, [userAddress]);
 
@@ -223,6 +240,7 @@ function App() {
             path="/launchpad_list"
             element={
               <LaunchpadList
+                launchpadsLoading={launchpadsLoading}
                 userTokens={userTokens}
                 getLaunchpads={getLaunchpads}
                 tokens={tokens}
