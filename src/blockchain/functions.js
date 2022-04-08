@@ -7,7 +7,7 @@ import {
   lockerAbi,
   pairAbi,
   airdropDeployerABI,
-airdropABI
+  airdropABI,
 } from "./abis";
 import { liquidityTokenByte, standardTokenByte } from "./bytecode";
 import axios from "axios";
@@ -26,7 +26,7 @@ let provider = new ethers.providers.JsonRpcProvider(
 
 let deployerAddress = "0x952E18F96ee5CaEd8c73FfF63b7FD6f8057A657a";
 let lockerAddress = "0x36E77ce59Bfe0ACc00B772F7C906b644Df06CE89";
-let airdropDeployer = "0x97c7CBf1bcbAa0D3Db737a908F57276373a6D6C0"
+let airdropDeployer = "0x985CD8ec7a7AA0B10b98E6e7E5b172D2E1B55b2e";
 
 let deployerContract = new ethers.Contract(
   deployerAddress,
@@ -36,11 +36,85 @@ let deployerContract = new ethers.Contract(
 
 let lockerContract = new ethers.Contract(lockerAddress, lockerAbi, provider);
 
-// allNormalTokenLockedCount
-// getCumulativeNormalTokenLockInfo
+let airdropDeployerContract = new ethers.Contract(
+  airdropDeployer,
+  airdropDeployerABI,
+  provider
+);
 
-// getCumulativeLpTokenLockInfo
-// allLpTokenLockedCount
+export const getAirdrops = async () => {
+  try {
+    let count = await airdropDeployerContract.airdropCount();
+
+    let data = [];
+
+    for (let i = 0; i < count; i++) {
+      let newData = await getAirdropInfo(i);
+      data.unshift(newData);
+    }
+
+    console.log(data);
+    return data;
+  } catch (error) {
+    console.log(error, "getAirdrops");
+  }
+};
+
+export const getAirdropInfo = async (id) => {
+  try {
+    let newData = {
+      name: "",
+      image: "",
+      token: "",
+      totalToken: "",
+      participants: "",
+      cancelled: "",
+      startDate: "",
+      allocations: "",
+      distributed: "",
+      status: "",
+      admin: "",
+      tokenName: "",
+      tokenSymbol: "",
+      tokenAddress: "",
+      id,
+    };
+
+    let airdropData = await airdropDeployerContract.getInfo(id);
+    let extraData;
+    try {
+      let receipt = await axios.get(airdropData[4]);
+
+      extraData = receipt.data;
+    } catch (error) {
+      console.log(error, "axios");
+    }
+
+    newData.name = extraData.title;
+    newData.image = extraData.logo;
+    newData.description = extraData.description;
+    newData.token = airdropData[7];
+    newData.decimals = airdropData[1];
+    newData.participants = Number(airdropData[0][3]);
+    newData.cancelled = Number(airdropData[0][7]) === 2;
+    newData.startDate = Number(airdropData[0][0]);
+    newData.allocations = Number(airdropData[0][1] / 10 ** airdropData[1]);
+    newData.distributed = Number(airdropData[0][2] / 10 ** airdropData[1]);
+    newData.progress = (newData.distributed * 100) / newData.allocations;
+    newData.status = Number(airdropData[0][7]);
+    newData.admin = airdropData[5];
+    newData.tokenName = airdropData[2];
+    newData.tokenSymbol = airdropData[3];
+    newData.tokenAddress = airdropData[6];
+    newData.airdropAddress = airdropData[7];
+
+    console.log(airdropData, "airdrop data", extraData, newData);
+
+    return newData;
+  } catch (error) {
+    console.log(error, "getAirdropInfo");
+  }
+};
 
 export const getNormalTokensLock = async () => {
   // { "Token": { name: "AAVE", icon: aaveIcon }, "Symbol": "AAVE", "Amount": "12.000.000.000", "Token Address": "0x5617...bf9", "Action": "/tokens/1", id: 1 },
@@ -568,12 +642,12 @@ export const approveDeployer = async (
 
     switch (type) {
       case "LAUNCHPAD":
-         operator = deployerAddress;
+        operator = deployerAddress;
         break;
       case "AIRDROP":
-       operator = airdropDeployer;
+        operator = airdropDeployer;
         break;
-    
+
       default:
         break;
     }
@@ -662,22 +736,30 @@ export const nativeBalance = async (userAddress) => {
 
 export const createAirdrop = async (tokenAddress, infoURL) => {
   try {
-    let signer = await getSigner()
+    let signer = await getSigner();
 
-    let instance = await new ethers.Contract(airdropDeployer, airdropDeployerABI, signer);
+    let instance = await new ethers.Contract(
+      airdropDeployer,
+      airdropDeployerABI,
+      signer
+    );
 
-    let tx = await instance.createAirdrop(tokenAddress, infoURL)
-    
-    let receipt = await tx.wait()
+    let tx = await instance.createAirdrop(tokenAddress, infoURL, {
+      value: ethers.utils.parseUnits("0.01", "ether"),
+    });
 
-    return receipt
-    
+    let receipt = await tx.wait();
+
+    return receipt;
   } catch (error) {
-    console.log(error)
+    console.log(error);
+    if (error.data) {
+      window.alert(error.data.message);
+    }
   }
-}
-// reateAirdrop(       
-//   address _token,   
+};
+// reateAirdrop(
+//   address _token,
 //   string memory _URIData
 
 const tokenContractInstance = async (

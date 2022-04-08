@@ -1,13 +1,31 @@
 import Form from "../common/Form";
 import Input from "../common/Input";
 
-export default function CreateLaunchpad3({ extraInfo, setExtraInfo }) {
+export default function CreateLaunchpad3({ airdrop, extraInfo, setExtraInfo }) {
   return (
     <div className="launch container">
       <Form className="form--launchpad">
         <header className="form__header">
           <h2 className="title title--form">Additional Info</h2>
         </header>
+        {airdrop && (
+          <>
+            <Input
+              type="text"
+              displayType="input"
+              className="form__input-wrapper form__input-wrapper--first"
+              placeholder=""
+              title="Airdrop Title"
+              name="title"
+              // info="URL must end with a supported image extension png, jpg, jpeg or gif."
+              value={extraInfo.title}
+              onChange={(e) => {
+                setExtraInfo({ ...extraInfo, title: e.target.value });
+              }}
+            />
+            <div className="divider"></div>
+          </>
+        )}
 
         <Input
           type="text"

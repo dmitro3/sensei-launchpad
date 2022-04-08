@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from "react";
 import AddTokenAddress from "../common/AddTokenAddress";
-import ExtraInfo from "../../components/pages/CreateLaunchpad3"
+import ExtraInfo from "../../components/pages/CreateLaunchpad3";
 import { useMoralisWeb3Api } from "react-moralis";
 import { create } from "ipfs-http-client";
 import {
   checkAllowance,
   approveDeployer,
   createLaunchpad,
-  createAirdrop
+  createAirdrop,
 } from "../../blockchain/functions";
 
-export default function CreateAirdrop({userAddress,
-  setPopupShow}) {
+export default function CreateAirdrop({ userAddress, setPopupShow }) {
   const client = create("https://ipfs.infura.io:5001/api/v0");
   const Web3Api = useMoralisWeb3Api();
   const [isLoading, setIsLoading] = useState(false);
@@ -26,6 +25,7 @@ export default function CreateAirdrop({userAddress,
     infoURL: "",
   });
   const [extraInfo, setExtraInfo] = useState({
+    title: "",
     logo: "",
     website: "",
     facebook: "",
@@ -38,7 +38,6 @@ export default function CreateAirdrop({userAddress,
     description: "",
   });
 
-
   const uploadInfo = async () => {
     let jsonObj = JSON.stringify(extraInfo);
 
@@ -48,7 +47,7 @@ export default function CreateAirdrop({userAddress,
       ...launchDetails,
       infoURL: `https://ipfs.io/ipfs/${added.path}`,
     });
-    return `https://ipfs.io/ipfs/${added.path}`
+    return `https://ipfs.io/ipfs/${added.path}`;
     // setStep(step + 1);
   };
 
@@ -115,15 +114,15 @@ export default function CreateAirdrop({userAddress,
 
   const handleCreate = async () => {
     setIsLoading(true);
-    let infoURL = await uploadInfo()
+    let infoURL = await uploadInfo();
     console.log("create", launchDetails);
 
-    let receipt = await createAirdrop(launchDetails.tokenAddress ,infoURL);
+    let receipt = await createAirdrop(launchDetails.tokenAddress, infoURL);
 
     if (receipt) {
       let address = receipt.events[0].address;
       let tx = receipt.transactionHash;
-      console.log(receipt, address)
+      console.log(receipt, address);
       // setLaunchpadCreated({ ...launchpadCreated, address, tx });
 
       // navigate("/launchpad_list");
@@ -135,21 +134,21 @@ export default function CreateAirdrop({userAddress,
     checkTokenAddress();
   }, [launchDetails.tokenAddress]);
 
-
   return (
     <div className="container formContainer">
       <h1 className="title title--page">Create Airdrop</h1>
-      
-       {step === 1 && (
-       <AddTokenAddress
-       errors={errors}
-       launchDetails={launchDetails}
-       setLaunchDetails={setLaunchDetails}
-       inputInfo="Create airdrop fee: 0.5 BNB"
-     />
+
+      {step === 1 && (
+        <AddTokenAddress
+          errors={errors}
+          launchDetails={launchDetails}
+          setLaunchDetails={setLaunchDetails}
+          inputInfo="Create airdrop fee: 0.5 BNB"
+        />
       )}
-       {step === 2 && (
+      {step === 2 && (
         <ExtraInfo
+          airdrop={true}
           extraInfo={extraInfo}
           setExtraInfo={setExtraInfo}
           inputInfo="Create pool fee: 1 BNB"
@@ -171,9 +170,9 @@ export default function CreateAirdrop({userAddress,
               ? handleApprove
               : step === 3
               ? uploadInfo
-              // : launchpadCreated.tx
+              : // : launchpadCreated.tx
               // ? () => navigate("/launchpad_list")
-              : step === 2
+              step === 2
               ? handleCreate
               : () => setStep(step + 1)
           }
@@ -184,9 +183,9 @@ export default function CreateAirdrop({userAddress,
             ? launchDetails.isAllowed
               ? "Next"
               : "Approve Token"
-            // : launchpadCreated.tx
+            : // : launchpadCreated.tx
             // ? "See Launchpads"
-            : step === 2
+            step === 2
             ? "Create"
             : "Next"}
         </button>

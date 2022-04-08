@@ -26,6 +26,8 @@ import {
   nativeBalance,
   getUserContributions,
   checkLP,
+  getAirdropInfo,
+  getAirdrops,
 } from "./blockchain/functions";
 import store from "store2";
 
@@ -35,6 +37,7 @@ function App() {
   const smallScreen = useSmallScreen(990);
   const [menuVisible, setMenuVisible] = useState(false);
   const [tokens, setTokens] = useState([]);
+  const [airdrops, setAirdrops] = useState([]);
   const [userTokens, setUserTokens] = useState([]);
   const [userAddress, setUserAddress] = useState("");
   const [walletType, setWalletType] = useState("");
@@ -166,10 +169,21 @@ function App() {
     setLaunchpadsLoading(false);
   };
 
+  const getAirdropsDetails = async () => {
+    setLaunchpadsLoading(true);
+    let receipt = await getAirdrops();
+    if (receipt) {
+      store.set("airdrops", receipt);
+      setAirdrops(receipt);
+    }
+    setLaunchpadsLoading(false);
+  };
+
   useEffect(() => {
     let user = window.localStorage.getItem("userAddress");
     let storedLaunchpads = store.get("launchpads");
 
+    getAirdropInfo("0");
     if (storedLaunchpads) {
       setTokens(storedLaunchpads);
     }
@@ -276,10 +290,37 @@ function App() {
           <Route path="/tokens/:id" element={<ItemDetails />} />
           <Route path="/liquidity" element={<Liquidity />} />
           <Route path="/liquidity/:id" element={<ItemDetails />} />
-          <Route path="/create_airdrop" element={<CreateAirdrop  userAddress={userAddress}
-                setPopupShow={setPopupShow} />} />
-          <Route path="/airdrop_list" element={<AirdropList />} />
-          <Route path="/airdrop_list/:id" element={<AirdropDetails />} />
+          <Route
+            path="/create_airdrop"
+            element={
+              <CreateAirdrop
+                userAddress={userAddress}
+                setPopupShow={setPopupShow}
+              />
+            }
+          />
+          <Route
+            path="/airdrop_list"
+            element={
+              <AirdropList
+                launchpadsLoading={launchpadsLoading}
+                airdrops={airdrops}
+                getAirdropsDetails={getAirdropsDetails}
+              />
+            }
+          />
+          <Route
+            path="/airdrop_list/:id"
+            element={
+              <AirdropDetails
+                userAddress={userAddress}
+                setPopupShow={setPopupShow}
+                airdrops={airdrops}
+                walletType={walletType}
+                walletProvider={walletProvider}
+              />
+            }
+          />
           <Route path="/create_launchpad2" element={<CreateLaunchpad2 />} />
         </Routes>
         <p className="disclaimer container">
