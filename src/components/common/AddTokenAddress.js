@@ -1,7 +1,6 @@
 import Form from "./Form";
 import { Link } from "react-router-dom";
 import Input from "./Input";
-import { useState } from "react";
 import useSmallScreen from "./../../hooks/useSmallScreen";
 
 export default function AddTokenAddress({
@@ -10,7 +9,6 @@ export default function AddTokenAddress({
   inputInfo,
   errors,
 }) {
-  const [value, setValue] = useState("");
   const smallScreen = useSmallScreen(768);
 
   return (

@@ -122,7 +122,7 @@ export default function CreateLaunchpad({ userAddress }) {
   const handleApprove = async () => {
     setIsLoading(true);
     console.log("approve");
-    let receipt = await approveDeployer(launchDetails.tokenAddress);
+    let receipt = await approveDeployer(launchDetails.tokenAddress, "LAUNCHPAD");
     if (receipt) {
       console.log(receipt);
       checkTokenAllowance(true);

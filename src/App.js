@@ -276,7 +276,8 @@ function App() {
           <Route path="/tokens/:id" element={<ItemDetails />} />
           <Route path="/liquidity" element={<Liquidity />} />
           <Route path="/liquidity/:id" element={<ItemDetails />} />
-          <Route path="/create_airdrop" element={<CreateAirdrop />} />
+          <Route path="/create_airdrop" element={<CreateAirdrop  userAddress={userAddress}
+                setPopupShow={setPopupShow} />} />
           <Route path="/airdrop_list" element={<AirdropList />} />
           <Route path="/airdrop_list/:id" element={<AirdropDetails />} />
           <Route path="/create_launchpad2" element={<CreateLaunchpad2 />} />

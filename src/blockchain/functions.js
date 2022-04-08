@@ -6,6 +6,8 @@ import {
   standardTokenAbi,
   lockerAbi,
   pairAbi,
+  airdropDeployerABI,
+airdropABI
 } from "./abis";
 import { liquidityTokenByte, standardTokenByte } from "./bytecode";
 import axios from "axios";
@@ -24,6 +26,7 @@ let provider = new ethers.providers.JsonRpcProvider(
 
 let deployerAddress = "0x952E18F96ee5CaEd8c73FfF63b7FD6f8057A657a";
 let lockerAddress = "0x36E77ce59Bfe0ACc00B772F7C906b644Df06CE89";
+let airdropDeployer = "0x97c7CBf1bcbAa0D3Db737a908F57276373a6D6C0"
 
 let deployerContract = new ethers.Contract(
   deployerAddress,
@@ -550,6 +553,7 @@ export const createLaunchpad = async (
 
 export const approveDeployer = async (
   tokenAddress,
+  type,
   walletType,
   walletProvider
 ) => {
@@ -560,8 +564,22 @@ export const approveDeployer = async (
       walletProvider
     );
 
+    let operator;
+
+    switch (type) {
+      case "LAUNCHPAD":
+         operator = deployerAddress;
+        break;
+      case "AIRDROP":
+       operator = airdropDeployer;
+        break;
+    
+      default:
+        break;
+    }
+
     let tx = await instance.approve(
-      deployerAddress,
+      operator,
       "115792089237316195423570985008687907853269984665640564039457584007913129639935",
       { gasLimit: 100000 }
     );
@@ -616,6 +634,9 @@ export const checkAllowance = async (userAddress, tokenAddress, _operator) => {
       case "LOCKER":
         operator = lockerAddress;
         break;
+      case "AIRDROP":
+        operator = airdropDeployer;
+        break;
       default:
         break;
     }
@@ -638,6 +659,26 @@ export const nativeBalance = async (userAddress) => {
     console.log(error, "nativeBalance");
   }
 };
+
+export const createAirdrop = async (tokenAddress, infoURL) => {
+  try {
+    let signer = await getSigner()
+
+    let instance = await new ethers.Contract(airdropDeployer, airdropDeployerABI, signer);
+
+    let tx = await instance.createAirdrop(tokenAddress, infoURL)
+    
+    let receipt = await tx.wait()
+
+    return receipt
+    
+  } catch (error) {
+    console.log(error)
+  }
+}
+// reateAirdrop(       
+//   address _token,   
+//   string memory _URIData
 
 const tokenContractInstance = async (
   tokenAddress,
