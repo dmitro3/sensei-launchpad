@@ -309,6 +309,20 @@ export const getNormalTokensLock = async () => {
   }
 };
 
+// totalLockCountForToken
+// getLocksForToken
+
+export const getTokenLockRecord = async (_address) => {
+  try {
+    let count = await lockerContract.totalLockCountForToken(_address);
+
+    let data = await lockerContract.getLocksForToken(_address, "0", count);
+    return data;
+  } catch (error) {
+    console.log(error, "getTokenLockRecord");
+  }
+};
+
 export const getLPTokensLock = async () => {
   try {
     let count = await lockerContract.allLpTokenLockedCount();

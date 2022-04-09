@@ -214,6 +214,7 @@ function App() {
       console.log(receipt, "regular tokens");
       store.set("regularLockers", receipt);
       setRegularLockers(receipt);
+      return receipt;
     }
   };
 
@@ -365,7 +366,12 @@ function App() {
           />
           <Route
             path="/tokens/:id"
-            element={<ItemDetails lockers={regularLocker} />}
+            element={
+              <ItemDetails
+                getRegularLockers={getRegularLockers}
+                lockers={regularLocker}
+              />
+            }
           />
           <Route
             path="/liquidity"

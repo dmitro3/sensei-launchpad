@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import useSmallScreen from "./../../hooks/useSmallScreen";
 import truncate from "./../../services/truncate";
+import { getTokenLockRecord, lock } from "../../blockchain/functions";
 
 let empty = [
   "0x0000000000000000000000000000000000000000",
@@ -13,23 +14,55 @@ let empty = [
   "",
 ];
 
-export default function ItemDetails({ lockers }) {
+export default function ItemDetails({ lockers, getRegularLockers }) {
   let { id } = useParams();
   const [locker, setLocker] = useState(lockers[id] || empty);
+  const [lockRecord, setLockRecord] = useState([]);
+
+  const getLockRecord = async () => {
+    if (locker && locker[3]) {
+      let receipt = await getTokenLockRecord(locker[0]);
+      if (receipt) {
+        console.log(receipt, "record");
+        setLockRecord(receipt);
+      }
+    }
+  };
+
+  const getInitialLocker = async () => {
+    if (locker[3] === 0) {
+      let newLockers = await getRegularLockers();
+      if (newLockers) {
+        setLocker(newLockers[id]);
+      }
+    }
+  };
+
   const smallScreen = useSmallScreen(768);
 
-  //   useEffect(() => {
-  //     if (locker && locker[2] === 0) {
-  //       setLocker(lockers[id]);
-  //     }
-  //   }, [lockers]);
+  const getData = (time) => {
+    let data = new Date(time * 1000).toString();
+    let split = data.split(" ");
+
+    return `${split[0]} ${split[1]} ${split[2]} ${split[3]}`;
+  };
+
+  useEffect(() => {
+    getInitialLocker();
+  }, []);
+
+  useEffect(() => {
+    getLockRecord();
+  }, [locker]);
 
   return (
     <div className="details details--item container">
       <div className="details__header">
-        <button className="details__back">
-          <Arrow2 className="details__back-icon" />
-        </button>
+        <Link to="/tokens">
+          <button className="details__back">
+            <Arrow2 className="details__back-icon" />
+          </button>
+        </Link>
         <h1 className="title title--page">Token Details</h1>
       </div>
       <div className="details__wrapper">
@@ -93,28 +126,47 @@ export default function ItemDetails({ lockers }) {
             </div>
           )}
           <ul className="items__list">
-            <li className="items__list-item">
-              <div className="items__column items__column--1">
-                {smallScreen && (
-                  <div className="items__title">Wallet address</div>
-                )}
-                <span className="items__text">0x5617...bf9</span>
-              </div>
-              <div className="items__column items__column--2">
-                {smallScreen && <div className="items__title">Amount</div>}
-                <span className="items__text">12.000.000.000</span>
-              </div>
-              <div className="items__column items__column--3">
-                {smallScreen && <div className="items__title">Unlock time</div>}
-                <span className="items__text">2022.02.02 01:00 UTC</span>
-              </div>
-              <div className="items__column items__column--4">
-                {smallScreen && <div className="items__title">Action</div>}
-                <Link to="/" className="items__text items__text--link">
-                  View
-                </Link>
-              </div>
-            </li>
+            {lockRecord.map((el, index) => {
+              return (
+                <>
+                  <li className="items__list-item">
+                    <div className="items__column items__column--1">
+                      {smallScreen && (
+                        <div className="items__title">Wallet address</div>
+                      )}
+                      <span className="items__text">
+                        {truncate(el.owner, 20)}
+                      </span>
+                    </div>
+                    <div className="items__column items__column--2">
+                      {smallScreen && (
+                        <div className="items__title">Amount</div>
+                      )}
+                      <span className="items__text">
+                        {" "}
+                        {(el.amount / 10 ** locker[3]).toFixed(2)} {locker[5]}
+                      </span>
+                    </div>
+                    <div className="items__column items__column--3">
+                      {smallScreen && (
+                        <div className="items__title">Unlock time</div>
+                      )}
+                      <span className="items__text">
+                        {getData(el.unlockDate)}
+                      </span>
+                    </div>
+                    <div className="items__column items__column--4">
+                      {smallScreen && (
+                        <div className="items__title">Action</div>
+                      )}
+                      <Link to="/" className="items__text items__text--link">
+                        View
+                      </Link>
+                    </div>
+                  </li>
+                </>
+              );
+            })}
           </ul>
         </div>
       </div>
