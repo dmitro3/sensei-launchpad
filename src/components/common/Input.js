@@ -7,7 +7,7 @@ export default function Input({
   onChange,
   onClick,
   title,
-  required = true,
+  required,
   displayType = "text",
   placeholder,
   separator = true,
@@ -15,12 +15,16 @@ export default function Input({
   info,
   children,
   Icon,
+  style,
   ...props
 }) {
   const id = Math.random();
 
   return (
-    <div className={"input-wrapper " + (className ? className : "")}>
+    <div
+      style={style}
+      className={"input-wrapper " + (className ? className : "")}
+    >
       {title && (
         <div className="input-wrapper__header">
           <label

@@ -7,15 +7,39 @@ import {
 import AirdropCard from "./AirdropCard";
 
 export default function AirdropList({
+  fetchUserAirdrops,
+  userAirdrops,
+  userAddress,
   launchpadsLoading,
   airdrops,
   getAirdropsDetails,
 }) {
   const [tokens, setTokens] = useState(allAirdrops);
+  const [activeTab, setActiveTab] = useState(0);
+  const [userCreated, setUserCreated] = useState([]);
+
+  const getUserCreated = async () => {
+    if (userAddress && airdrops) {
+      let temp = [];
+      airdrops.map((el) => {
+        if (el.admin.toLowerCase() === userAddress.toLowerCase()) {
+          temp.push(el);
+        }
+      });
+      console.log(temp, "userCreated");
+      setUserCreated(temp);
+    }
+  };
 
   useEffect(() => {
     getAirdropsDetails();
+    fetchUserAirdrops();
+    getUserCreated();
   }, []);
+
+  useEffect(() => {
+    getUserCreated();
+  }, [userAddress, airdrops]);
 
   return (
     <div className="catalog catalog--airdrop container">
@@ -34,9 +58,9 @@ export default function AirdropList({
         <li className="catalog__tabs-item">
           <button
             className={
-              "catalog__tabs-button" + (tokens === allAirdrops ? " active" : "")
+              "catalog__tabs-button" + (activeTab === 0 ? " active" : "")
             }
-            onClick={() => setTokens(allAirdrops)}
+            onClick={() => setActiveTab(0)}
           >
             All Airdrops
           </button>
@@ -44,9 +68,9 @@ export default function AirdropList({
         <li className="catalog__tabs-item">
           <button
             className={
-              "catalog__tabs-button" + (tokens === myAirdrops ? " active" : "")
+              "catalog__tabs-button" + (activeTab === 1 ? " active" : "")
             }
-            onClick={() => setTokens(myAirdrops)}
+            onClick={() => setActiveTab(1)}
           >
             My Airdrops
           </button>
@@ -54,23 +78,38 @@ export default function AirdropList({
         <li className="catalog__tabs-item">
           <button
             className={
-              "catalog__tabs-button" +
-              (tokens === createdAirdrops ? " active" : "")
+              "catalog__tabs-button" + (activeTab === 2 ? " active" : "")
             }
-            onClick={() => setTokens(createdAirdrops)}
+            onClick={() => setActiveTab(2)}
           >
             Created by you
           </button>
         </li>
       </ul>
       <ul className="cards-list cards-list--catalog">
-        {airdrops.map((item) => {
-          return (
-            <li className="cards-list__item" key={item.id}>
-              <AirdropCard item={item} />
-            </li>
-          );
-        })}
+        {activeTab === 0
+          ? airdrops.map((item) => {
+              return (
+                <li className="cards-list__item" key={item.id}>
+                  <AirdropCard item={item} />
+                </li>
+              );
+            })
+          : activeTab === 1
+          ? userAirdrops.map((item) => {
+              return (
+                <li className="cards-list__item" key={item.id}>
+                  <AirdropCard item={item} />
+                </li>
+              );
+            })
+          : userCreated.map((item) => {
+              return (
+                <li className="cards-list__item" key={item.id}>
+                  <AirdropCard item={item} />
+                </li>
+              );
+            })}
       </ul>
     </div>
   );

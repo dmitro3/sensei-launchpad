@@ -42,6 +42,180 @@ let airdropDeployerContract = new ethers.Contract(
   provider
 );
 
+// function getAllContributors () external view returns (User[] memory usersData){
+export const isAddress = async (_address) => {
+  let result = await ethers.utils.isAddress(_address);
+  console.log("result", result);
+  return result;
+};
+
+export const getUserAirdrops = async (userAddress) => {
+  try {
+    let contributions = await airdropDeployerContract.getUserContributions(
+      userAddress
+    );
+
+    return contributions;
+  } catch (error) {
+    console.log(error, "getUserAirdrops");
+  }
+};
+
+export const setUserAllocation = async (
+  _addresses,
+  _allocations,
+  _contractAddress,
+  walletType,
+  walletProvider
+) => {
+  try {
+    console.log(_addresses, _allocations, "addresses");
+    let signer = await getSigner(walletType, walletProvider);
+    let instance = await new ethers.Contract(
+      _contractAddress,
+      airdropABI,
+      signer
+    );
+
+    let tx = await instance.setUserAllocation(_addresses, _allocations);
+
+    let receipt = await tx.wait();
+
+    return receipt;
+  } catch (error) {
+    console.log(error, "handleAllocations");
+    if (error.data) {
+      window.alert(error.data.message);
+    }
+  }
+};
+
+export const setVesting = async (
+  _tge,
+  _cyclePerc,
+  _cycle,
+  _contractAddress,
+  walletType,
+  walletProvider
+) => {
+  try {
+    let signer = await getSigner(walletType, walletProvider);
+    let instance = await new ethers.Contract(
+      _contractAddress,
+      airdropABI,
+      signer
+    );
+
+    let tx = await instance.setVesting(
+      ethers.utils.parseUnits(_tge, 2),
+      ethers.utils.parseUnits(_cyclePerc, 2),
+      _cycle
+    );
+
+    let receipt = await tx.wait();
+
+    return receipt;
+  } catch (error) {
+    console.log(error, "handleAllocations");
+    if (error.data) {
+      window.alert(error.data.message);
+    }
+  }
+};
+
+export const startAirdrop = async (
+  startTime,
+  _contractAddress,
+  walletType,
+  walletProvider
+) => {
+  try {
+    let signer = await getSigner(walletType, walletProvider);
+    let instance = await new ethers.Contract(
+      _contractAddress,
+      airdropABI,
+      signer
+    );
+
+    let tx = await instance.startAirdrop(startTime);
+
+    let receipt = await tx.wait();
+
+    return receipt;
+  } catch (error) {
+    console.log(error, "startAirdrop");
+    if (error.data) {
+      window.alert(error.data.message);
+    }
+  }
+};
+
+export const cancelAirdrop = async (
+  _contractAddress,
+  walletType,
+  walletProvider
+) => {
+  try {
+    let signer = await getSigner(walletType, walletProvider);
+    let instance = await new ethers.Contract(
+      _contractAddress,
+      airdropABI,
+      signer
+    );
+
+    let tx = await instance.cancelAirdrop();
+
+    let receipt = await tx.wait();
+
+    return receipt;
+  } catch (error) {
+    console.log(error, "cancelAirdrop");
+    if (error.data) {
+      window.alert(error.data.message);
+    }
+  }
+};
+
+export const claim = async (
+  userAddress,
+  _contractAddress,
+  walletType,
+  walletProvider
+) => {
+  try {
+    let signer = await getSigner(walletType, walletProvider);
+    let instance = await new ethers.Contract(
+      _contractAddress,
+      airdropABI,
+      signer
+    );
+
+    let tx = await instance.claim(userAddress);
+
+    let receipt = await tx.wait();
+
+    return receipt;
+  } catch (error) {
+    console.log(error, "claim");
+    if (error.data) {
+      window.alert(error.data.message);
+    }
+  }
+};
+
+export const getAllContributors = async (_address) => {
+  try {
+    let instance = await new ethers.Contract(_address, airdropABI, provider);
+
+    let data = await instance.getAllContributors();
+
+    console.log(data, "all contributors");
+    return data;
+  } catch (error) {
+    console.log(error, "getAllContributors");
+  }
+};
+
 export const getAirdrops = async () => {
   try {
     let count = await airdropDeployerContract.airdropCount();
@@ -65,18 +239,22 @@ export const getAirdropInfo = async (id) => {
     let newData = {
       name: "",
       image: "",
+      description: "",
       token: "",
+      decimals: "",
       totalToken: "",
       participants: "",
       cancelled: "",
       startDate: "",
       allocations: "",
       distributed: "",
+      progress: "",
       status: "",
       admin: "",
       tokenName: "",
       tokenSymbol: "",
       tokenAddress: "",
+      airdropAddress: "",
       id,
     };
 
@@ -125,13 +303,6 @@ export const getNormalTokensLock = async () => {
       "0",
       count
     );
-
-    // for (let i = 0; i < count; i++) {
-    //   let newData = await getLaunchpadInfo(i);
-    //   data.unshift(newData);
-    // }
-
-    console.log(data);
     return data;
   } catch (error) {
     console.log(error, "getNormalTokensLock");
@@ -649,6 +820,7 @@ export const approveDeployer = async (
         break;
 
       default:
+        operator = type;
         break;
     }
 
@@ -712,6 +884,7 @@ export const checkAllowance = async (userAddress, tokenAddress, _operator) => {
         operator = airdropDeployer;
         break;
       default:
+        operator = _operator;
         break;
     }
     let tokenInstance = new ethers.Contract(tokenAddress, tokenAbi, provider);
@@ -835,5 +1008,17 @@ const getTokenSymbol = async (_address) => {
     return symbol;
   } catch (error) {
     return "";
+  }
+};
+
+export const getTokenBalance = async (userAddress, _address) => {
+  try {
+    let contract = new ethers.Contract(_address, standardTokenAbi, provider);
+
+    let balance = await contract.balanceOf(userAddress);
+
+    return balance;
+  } catch (error) {
+    return error;
   }
 };

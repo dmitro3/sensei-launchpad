@@ -25,9 +25,10 @@ import {
   launchpadDetails,
   nativeBalance,
   getUserContributions,
-  checkLP,
-  getAirdropInfo,
+  getNormalTokensLock,
+  getUserAirdrops,
   getAirdrops,
+  getLPTokensLock,
 } from "./blockchain/functions";
 import store from "store2";
 
@@ -44,6 +45,9 @@ function App() {
   const [walletProvider, setWalletProvider] = useState();
   const [userBalance, setUserBalance] = useState("");
   const [launchpadsLoading, setLaunchpadsLoading] = useState(false);
+  const [userAirdrops, setUserAirdrops] = useState();
+  const [regularLocker, setRegularLockers] = useState([]);
+  const [liquidityLocker, setLiquidityLockers] = useState([]);
 
   const connectMetamask = async () => {
     console.log("hola");
@@ -159,6 +163,31 @@ function App() {
     }
   };
 
+  const fetchUserAirdrops = async () => {
+    if (userAddress) {
+      let contributions = await getUserAirdrops(userAddress);
+      if (contributions) {
+        let temp = [];
+        contributions[0].map((el, index) => {
+          let item = airdrops.find((i) => i.id === Number(el));
+          console.log(item, "item");
+          if (item) {
+            let indexInToken = airdrops.findIndex((i) => i.id === Number(el));
+            airdrops[indexInToken].userContribution = contributions[1][index];
+            item.userContribution = contributions[1][index];
+            temp.push(item);
+          }
+        });
+        console.log(temp, "temp airdrops");
+        store.set("userAirdrops", temp);
+        store.set("airdrops", airdrops);
+        setUserAirdrops(temp);
+      }
+
+      console.log("contributions", contributions);
+    }
+  };
+
   const getLaunchpads = async () => {
     setLaunchpadsLoading(true);
     let receipt = await launchpadDetails();
@@ -179,31 +208,70 @@ function App() {
     setLaunchpadsLoading(false);
   };
 
+  const getRegularLockers = async () => {
+    let receipt = await getNormalTokensLock();
+    if (receipt) {
+      console.log(receipt, "regular tokens");
+      store.set("regularLockers", receipt);
+      setRegularLockers(receipt);
+    }
+  };
+
+  const getLiquidityLockers = async () => {
+    let receipt = await getLPTokensLock();
+    if (receipt) {
+      console.log(receipt, "lp tokens");
+      store.set("liquidityLockers", receipt);
+      setLiquidityLockers(receipt);
+    }
+  };
+
   useEffect(() => {
     let user = window.localStorage.getItem("userAddress");
     let storedLaunchpads = store.get("launchpads");
+    let storedAirdrops = store.get("airdrops");
+    let storedLockers = store.get("regularLockers");
+    let storedLPLockers = store.get("liquidityLockers");
 
-    getAirdropInfo("0");
     if (storedLaunchpads) {
       setTokens(storedLaunchpads);
+    }
+    if (storedAirdrops) {
+      setAirdrops(storedAirdrops);
+    }
+    if (storedLockers) {
+      setRegularLockers(storedLockers);
+    }
+    if (storedLPLockers) {
+      setLiquidityLockers(storedLPLockers);
     }
 
     if (user) {
       connectMetamask();
     }
+
+    // getRegularLockers();
   }, []);
 
   useEffect(() => {
     let userLaunchs = store.get("userLaunchpads");
+    let userAirdrops = store.get("userAirdrops");
     if (userLaunchs) {
       setUserTokens(userLaunchs);
+    }
+    if (userAirdrops) {
+      setUserAirdrops(userAirdrops);
     }
     getUserInfo();
   }, [userAddress]);
 
   useEffect(() => {
     getContributions();
-  }, [tokens]);
+  }, [userAddress, tokens]);
+
+  useEffect(() => {
+    fetchUserAirdrops();
+  }, [userAddress, airdrops]);
 
   useEffect(() => {
     if (menuVisible) {
@@ -286,10 +354,32 @@ function App() {
               />
             }
           />
-          <Route path="/tokens" element={<Tokens />} />
-          <Route path="/tokens/:id" element={<ItemDetails />} />
-          <Route path="/liquidity" element={<Liquidity />} />
-          <Route path="/liquidity/:id" element={<ItemDetails />} />
+          <Route
+            path="/tokens"
+            element={
+              <Tokens
+                getRegularLockers={getRegularLockers}
+                lockers={regularLocker}
+              />
+            }
+          />
+          <Route
+            path="/tokens/:id"
+            element={<ItemDetails lockers={regularLocker} />}
+          />
+          <Route
+            path="/liquidity"
+            element={
+              <Liquidity
+                getLiquidityLockers={getLiquidityLockers}
+                lockers={liquidityLocker}
+              />
+            }
+          />
+          <Route
+            path="/liquidity/:id"
+            element={<ItemDetails lockers={liquidityLocker} />}
+          />
           <Route
             path="/create_airdrop"
             element={
@@ -303,6 +393,9 @@ function App() {
             path="/airdrop_list"
             element={
               <AirdropList
+                userAddress={userAddress}
+                fetchUserAirdrops={fetchUserAirdrops}
+                userAirdrops={userAirdrops}
                 launchpadsLoading={launchpadsLoading}
                 airdrops={airdrops}
                 getAirdropsDetails={getAirdropsDetails}
