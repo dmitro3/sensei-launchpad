@@ -2270,68 +2270,6 @@ export const standardTokenAbi = [
 
 export const lockerAbi = [
   {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "lockId",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "newAmount",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "newUnlockDate",
-        type: "uint256",
-      },
-    ],
-    name: "editLock",
-    outputs: [],
-    stateMutability: "payable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "owner",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "token",
-        type: "address",
-      },
-      {
-        internalType: "bool",
-        name: "isLpToken",
-        type: "bool",
-      },
-      {
-        internalType: "uint256",
-        name: "amount",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "unlockDate",
-        type: "uint256",
-      },
-    ],
-    name: "lock",
-    outputs: [
-      {
-        internalType: "uint256",
-        name: "id",
-        type: "uint256",
-      },
-    ],
-    stateMutability: "payable",
-    type: "function",
-  },
-  {
     anonymous: false,
     inputs: [
       {
@@ -2441,19 +2379,6 @@ export const lockerAbi = [
     ],
     name: "LockUpdated",
     type: "event",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "lockId",
-        type: "uint256",
-      },
-    ],
-    name: "unlock",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
   },
   {
     inputs: [],
@@ -2568,6 +2493,29 @@ export const lockerAbi = [
       },
     ],
     stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "lockId",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "newAmount",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "newUnlockDate",
+        type: "uint256",
+      },
+    ],
+    name: "editLock",
+    outputs: [],
+    stateMutability: "payable",
     type: "function",
   },
   {
@@ -2913,6 +2861,45 @@ export const lockerAbi = [
     inputs: [
       {
         internalType: "address",
+        name: "owner",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "token",
+        type: "address",
+      },
+      {
+        internalType: "bool",
+        name: "isLpToken",
+        type: "bool",
+      },
+      {
+        internalType: "uint256",
+        name: "amount",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "unlockDate",
+        type: "uint256",
+      },
+    ],
+    name: "lock",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "id",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
         name: "user",
         type: "address",
       },
@@ -3210,6 +3197,19 @@ export const lockerAbi = [
       },
     ],
     stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "lockId",
+        type: "uint256",
+      },
+    ],
+    name: "unlock",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
 ];

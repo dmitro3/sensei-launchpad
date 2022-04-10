@@ -25,7 +25,7 @@ let provider = new ethers.providers.JsonRpcProvider(
 );
 
 let deployerAddress = "0x039b7F5Be8410c7B962D603d7514dD7C20E2CD8F";
-let lockerAddress = "0x9Ef483C7A0A156d633947df6D67cF9BE9cfeB940";
+let lockerAddress = "0x9D367D8562957c68c47Baf54E128253921dd0279";
 let airdropDeployer = "0x985CD8ec7a7AA0B10b98E6e7E5b172D2E1B55b2e";
 
 let deployerContract = new ethers.Contract(
