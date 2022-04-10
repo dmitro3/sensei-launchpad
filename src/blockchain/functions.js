@@ -959,9 +959,14 @@ export const nativeBalance = async (userAddress) => {
   }
 };
 
-export const createAirdrop = async (tokenAddress, infoURL) => {
+export const createAirdrop = async (
+  tokenAddress,
+  infoURL,
+  walletType,
+  walletProvider
+) => {
   try {
-    let signer = await getSigner();
+    let signer = await getSigner(walletType, walletProvider);
 
     let instance = await new ethers.Contract(
       airdropDeployer,

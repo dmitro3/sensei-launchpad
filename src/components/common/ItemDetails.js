@@ -78,13 +78,13 @@ export default function ItemDetails({ tokens, lockers, getRegularLockers }) {
           <li className="details__item">
             <span className="details__item-text">Token Symbol</span>
             <span className="details__item-text details__item-text--value">
-              {locker[4]}
+              {locker[5]}
             </span>
           </li>
           <li className="details__item">
             <span className="details__item-text">Total Amount Locked</span>
             <span className="details__item-text details__item-text--value">
-              {(locker[2] / 10 ** locker[3]).toFixed(2)} {locker[4]}
+              {(locker[2] / 10 ** locker[3]).toFixed(2)} {locker[5]}
             </span>
           </li>
           {/* <li className="details__item">

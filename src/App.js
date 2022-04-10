@@ -351,6 +351,8 @@ function App() {
             path="/create_launchpad"
             element={
               <CreateLaunchpad
+                walletType={walletType}
+                walletProvider={walletProvider}
                 getLaunchpads={getLaunchpads}
                 userAddress={userAddress}
                 setPopupShow={setPopupShow}
@@ -361,6 +363,8 @@ function App() {
             path="/create_launchpad/:id"
             element={
               <CreateLaunchpad
+                walletType={walletType}
+                walletProvider={walletProvider}
                 getLaunchpads={getLaunchpads}
                 userAddress={userAddress}
                 setPopupShow={setPopupShow}
@@ -368,7 +372,15 @@ function App() {
             }
           />
           <Route path="/create_fairlaunch" element={<CreateFairLaunch />} />
-          <Route path="/create_token" element={<CreateToken />} />
+          <Route
+            path="/create_token"
+            element={
+              <CreateToken
+                walletType={walletType}
+                walletProvider={walletProvider}
+              />
+            }
+          />
           <Route
             path="/launchpad_list"
             element={
@@ -479,6 +491,8 @@ function App() {
               <CreateAirdrop
                 userAddress={userAddress}
                 setPopupShow={setPopupShow}
+                walletType={walletType}
+                walletProvider={walletProvider}
               />
             }
           />

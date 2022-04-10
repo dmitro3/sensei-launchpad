@@ -13,7 +13,11 @@ import {
 } from "../../blockchain/functions";
 import { create } from "ipfs-http-client";
 
-export default function CreateLaunchpad({ userAddress }) {
+export default function CreateLaunchpad({
+  userAddress,
+  walletType,
+  walletProvider,
+}) {
   const navigate = useNavigate();
   let { id } = useParams();
   const client = create("https://ipfs.infura.io:5001/api/v0");
@@ -158,7 +162,9 @@ export default function CreateLaunchpad({ userAddress }) {
     console.log("approve");
     let receipt = await approveDeployer(
       launchDetails.tokenAddress,
-      "LAUNCHPAD"
+      "LAUNCHPAD",
+      walletType,
+      walletProvider
     );
     if (receipt) {
       console.log(receipt);
@@ -171,7 +177,11 @@ export default function CreateLaunchpad({ userAddress }) {
     setIsLoading(true);
     console.log("create", launchDetails);
 
-    let receipt = await createLaunchpad(launchDetails);
+    let receipt = await createLaunchpad(
+      launchDetails,
+      walletType,
+      walletProvider
+    );
 
     if (receipt) {
       let address = receipt.events[0].address;

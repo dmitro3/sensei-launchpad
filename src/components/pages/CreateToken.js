@@ -11,7 +11,7 @@ const selectList = [
   { title: "Liquidity Generator Token", id: 1, selected: false },
 ];
 
-export default function CreateToken() {
+export default function CreateToken({ walletType, walletProvider }) {
   const navigate = useNavigate();
   const [tokenSelected, setTokenSelected] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -36,7 +36,12 @@ export default function CreateToken() {
 
   const handleCreate = async () => {
     setIsLoading(true);
-    let receipt = await deployToken(tokenSelected, form);
+    let receipt = await deployToken(
+      tokenSelected,
+      form,
+      walletType,
+      walletProvider
+    );
     if (receipt) {
       console.log(receipt);
       setContractData({

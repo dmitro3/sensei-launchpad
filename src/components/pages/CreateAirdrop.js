@@ -10,7 +10,12 @@ import {
   createAirdrop,
 } from "../../blockchain/functions";
 
-export default function CreateAirdrop({ userAddress, setPopupShow }) {
+export default function CreateAirdrop({
+  userAddress,
+  setPopupShow,
+  walletType,
+  walletProvider,
+}) {
   const client = create("https://ipfs.infura.io:5001/api/v0");
   const Web3Api = useMoralisWeb3Api();
   const [isLoading, setIsLoading] = useState(false);
@@ -104,7 +109,12 @@ export default function CreateAirdrop({ userAddress, setPopupShow }) {
   const handleApprove = async () => {
     setIsLoading(true);
     console.log("approve");
-    let receipt = await approveDeployer(launchDetails.tokenAddress, "AIRDROP");
+    let receipt = await approveDeployer(
+      launchDetails.tokenAddress,
+      "AIRDROP",
+      walletType,
+      walletProvider
+    );
     if (receipt) {
       console.log(receipt);
       checkTokenAllowance(true);
@@ -117,7 +127,12 @@ export default function CreateAirdrop({ userAddress, setPopupShow }) {
     let infoURL = await uploadInfo();
     console.log("create", launchDetails);
 
-    let receipt = await createAirdrop(launchDetails.tokenAddress, infoURL);
+    let receipt = await createAirdrop(
+      launchDetails.tokenAddress,
+      infoURL,
+      walletType,
+      walletProvider
+    );
 
     if (receipt) {
       let address = receipt.events[0].address;
