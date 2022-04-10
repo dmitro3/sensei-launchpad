@@ -10,7 +10,7 @@ export default function AirdropList({
   fetchUserAirdrops,
   userAirdrops,
   userAddress,
-  launchpadsLoading,
+  airdropsLoading,
   airdrops,
   getAirdropsDetails,
 }) {
@@ -86,6 +86,11 @@ export default function AirdropList({
           </button>
         </li>
       </ul>
+      {airdropsLoading && (
+        <div className="loading-block">
+          <h1>Loading last airdrops...</h1>
+        </div>
+      )}
       <ul className="cards-list cards-list--catalog">
         {activeTab === 0
           ? airdrops.map((item) => {

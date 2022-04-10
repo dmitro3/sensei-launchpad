@@ -24,8 +24,8 @@ let provider = new ethers.providers.JsonRpcProvider(
   "https://data-seed-prebsc-2-s2.binance.org:8545/"
 );
 
-let deployerAddress = "0x952E18F96ee5CaEd8c73FfF63b7FD6f8057A657a";
-let lockerAddress = "0x36E77ce59Bfe0ACc00B772F7C906b644Df06CE89";
+let deployerAddress = "0x039b7F5Be8410c7B962D603d7514dD7C20E2CD8F";
+let lockerAddress = "0x9Ef483C7A0A156d633947df6D67cF9BE9cfeB940";
 let airdropDeployer = "0x985CD8ec7a7AA0B10b98E6e7E5b172D2E1B55b2e";
 
 let deployerContract = new ethers.Contract(
@@ -278,7 +278,7 @@ export const getAirdropInfo = async (id) => {
     newData.startDate = Number(airdropData[0][0]);
     newData.allocations = Number(airdropData[0][1] / 10 ** airdropData[1]);
     newData.distributed = Number(airdropData[0][2] / 10 ** airdropData[1]);
-    newData.progress = (newData.distributed * 100) / newData.allocations;
+    newData.progress = (newData.distributed * 100) / newData.allocations || 0;
     newData.status = Number(airdropData[0][7]);
     newData.admin = airdropData[5];
     newData.tokenName = airdropData[2];
@@ -309,8 +309,21 @@ export const getNormalTokensLock = async () => {
   }
 };
 
-// totalLockCountForToken
-// getLocksForToken
+// normalLocksForUser
+// lpLocksForUser
+
+export const getUserLocks = async (_address) => {
+  try {
+    let normalLocks = await lockerContract.normalLocksForUser(_address);
+    let LpLocks = await lockerContract.lpLocksForUser(_address);
+
+    console.log({ normalLocks, LpLocks }, "userLocks");
+
+    return { normalLocks, LpLocks };
+  } catch (error) {
+    console.log(error, "getTokenLockRecord");
+  }
+};
 
 export const getTokenLockRecord = async (_address) => {
   try {
@@ -356,6 +369,25 @@ export const lock = async (params, walletType, walletProvider) => {
     return receipt;
   } catch (error) {
     console.log(error);
+    if (error.data) {
+      window.alert(error.data.message);
+    }
+  }
+};
+
+export const unlock = async (id, walletType, walletProvider) => {
+  try {
+    let signer = await getSigner(walletType, walletProvider);
+
+    let lockerInstance = new ethers.Contract(lockerAddress, lockerAbi, signer);
+
+    let tx = await lockerInstance.unlock(id);
+
+    let receipt = await tx.wait();
+
+    return receipt;
+  } catch (error) {
+    console.log(error, "unlock");
     if (error.data) {
       window.alert(error.data.message);
     }
@@ -561,7 +593,7 @@ export const getLaunchpadInfo = async (id) => {
       locked: "",
       lockPeriod: "",
       lockDuration: "",
-      audit: "",
+      audit: false,
       website: "",
       social: { tg: "/", twitter: "/" },
       utility: "",
@@ -585,6 +617,7 @@ export const getLaunchpadInfo = async (id) => {
       status: "",
       values: [],
       userContribution: 0,
+      level: "low",
     };
 
     let launchpadData = await deployerContract.getInfo(id);
@@ -604,7 +637,11 @@ export const getLaunchpadInfo = async (id) => {
     newData.maxSupply = launchpadData.data[12] / 10 ** launchpadData.decimals;
     newData.desc = extraData.description;
     newData.bnbPrice = launchpadData.data[0] / 10000;
+    newData.category = extraData.category.title;
     newData.listPrice = launchpadData.data[1] / 10000;
+    newData.ratio = `1BNB / ${launchpadData.data[1] / 10000}${
+      launchpadData.symbol[0]
+    }`;
     newData.cap = [
       Number(launchpadData.data[2]),
       Number(launchpadData.data[3]),
@@ -615,9 +652,10 @@ export const getLaunchpadInfo = async (id) => {
     ];
     newData.sold = Number(launchpadData.data[10]);
     newData.likes = Number(launchpadData.data[11]);
-    newData.progress = (launchpadData.data[10] * 100) / newData.cap[1];
+    newData.progress = (launchpadData.data[10] * 100) / newData.cap[1] || 0;
     newData.liquidity = Number(launchpadData.data[9]);
     newData.lockup = Number(launchpadData.data[8]);
+    newData.lockDuration = Number(launchpadData.data[8]);
     newData.tokenForSale = (newData.bnbPrice * newData.cap[1]) / 10 ** 18;
     newData.tokenForLiquidity =
       (newData.listPrice * newData.cap[1] * newData.liquidity) / 100 / 10 ** 18;
@@ -661,7 +699,7 @@ export const getLaunchpadInfo = async (id) => {
       // { title: "Burnt", value: 37, color: "#0993EC", id: 2, active: false },
     ];
     newData.id = id;
-    newData.audited = true;
+    newData.audited = false;
     newData.verified = true;
     newData.userContribution = 0;
 

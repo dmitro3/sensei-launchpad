@@ -1,5 +1,16 @@
 import Form from "../common/Form";
 import Input from "../common/Input";
+import Select from "../common/Select";
+
+const selectList = [
+  { title: "Select Category", id: 0, selected: true },
+  { title: "DeFi", id: 1, selected: false },
+  { title: "NFT", id: 2, selected: false },
+  { title: "Metaverse", id: 3, selected: false },
+  { title: "Trending", id: 4, selected: false },
+  { title: "DOA", id: 5, selected: false },
+  { title: "Gaming", id: 6, selected: true },
+];
 
 export default function CreateLaunchpad3({ airdrop, extraInfo, setExtraInfo }) {
   return (
@@ -40,6 +51,22 @@ export default function CreateLaunchpad3({ airdrop, extraInfo, setExtraInfo }) {
             setExtraInfo({ ...extraInfo, logo: e.target.value });
           }}
         />
+
+        {!airdrop && (
+          <div className="input-wrapper form__input-wrapper">
+            <div className="input-wrapper__header">
+              <label className="label">Category</label>
+            </div>
+            <Select
+              className="select--token"
+              callback={(e) =>
+                setExtraInfo({ ...extraInfo, category: selectList[e] })
+              }
+              list={selectList}
+              // disabled={isLoading}
+            />
+          </div>
+        )}
 
         <Input
           type="text"

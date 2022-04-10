@@ -15,7 +15,11 @@ import { svgIcons } from "../../Icons/svgIcons";
 //   { title: "Standard token 3", selected: false, id: 2 },
 // ];
 
-export default function CreateLaunchpad2({ launchDetails, setLaunchDetails }) {
+export default function CreateLaunchpad2({
+  launchDetails,
+  setLaunchDetails,
+  errors,
+}) {
   const [startTime, setStartTime] = useState(null);
   const [endTime, setEndTime] = useState(null);
 
@@ -51,6 +55,7 @@ export default function CreateLaunchpad2({ launchDetails, setLaunchDetails }) {
           placeholder="0"
           title="Presale Rate"
           name="rate"
+          required={true}
           info="If I spend 1 BNB how many tokens will I receive?"
           value={launchDetails.price}
           onChange={(e) => {
@@ -103,6 +108,7 @@ export default function CreateLaunchpad2({ launchDetails, setLaunchDetails }) {
           placeholder="0"
           title="SoftCap (BNB)"
           name="softcap"
+          required={true}
           value={launchDetails.softCap}
           onChange={(e) => {
             setLaunchDetails({ ...launchDetails, softCap: e.target.value });
@@ -115,6 +121,7 @@ export default function CreateLaunchpad2({ launchDetails, setLaunchDetails }) {
           placeholder="0"
           title="HardCap (BNB)"
           name="hardcap"
+          required={true}
           value={launchDetails.hardCap}
           onChange={(e) => {
             setLaunchDetails({ ...launchDetails, hardCap: e.target.value });
@@ -127,6 +134,7 @@ export default function CreateLaunchpad2({ launchDetails, setLaunchDetails }) {
           placeholder="0"
           title="Minimum buy (BNB)"
           name="min"
+          required={true}
           value={launchDetails.minBuy}
           onChange={(e) => {
             setLaunchDetails({ ...launchDetails, minBuy: e.target.value });
@@ -139,6 +147,7 @@ export default function CreateLaunchpad2({ launchDetails, setLaunchDetails }) {
           placeholder="0"
           title="Maximum buy (BNB)"
           name="max"
+          required={true}
           value={launchDetails.maxBuy}
           onChange={(e) => {
             setLaunchDetails({ ...launchDetails, maxBuy: e.target.value });
@@ -175,6 +184,7 @@ export default function CreateLaunchpad2({ launchDetails, setLaunchDetails }) {
           placeholder="0"
           title="Liquidity (%)"
           name="listingRate"
+          required={true}
           value={launchDetails.liquidityPerc}
           onChange={(e) => {
             setLaunchDetails({
@@ -190,6 +200,7 @@ export default function CreateLaunchpad2({ launchDetails, setLaunchDetails }) {
           placeholder="0"
           title="Listing Rate"
           name="listingRate"
+          required={true}
           info={`1 BNB = ${launchDetails.listingPrice} ${launchDetails.tokenSymbol}`}
           value={launchDetails.listingPrice}
           onChange={(e) => {
@@ -266,6 +277,7 @@ export default function CreateLaunchpad2({ launchDetails, setLaunchDetails }) {
           displayType="input"
           className="form__input-wrapper form__input-wrapper--last"
           placeholder="0"
+          required={true}
           title="Listing Lockup (days)"
           name="listingLockup"
           value={launchDetails.lockupPeriod}
@@ -286,6 +298,11 @@ export default function CreateLaunchpad2({ launchDetails, setLaunchDetails }) {
         <div className="tokenCount">
           <h1>you need {getTokensNeeded()} tokens to create</h1>
         </div>
+        {errors.length > 0 && (
+          <div className="tokenCount errorMessage">
+            <h1 className="input-wrapper__error">{errors[0]}</h1>
+          </div>
+        )}
       </Form>
     </div>
   );

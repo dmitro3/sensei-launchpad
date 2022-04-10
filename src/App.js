@@ -11,6 +11,7 @@ import TokenDetails from "./components/pages/LaunchpadList/TokenDetails";
 import CreateLock from "./components/pages/CreateLock";
 import Tokens from "./components/pages/Tokens";
 import ItemDetails from "./components/common/ItemDetails";
+import RecordDetails from "./components/common/recordDetails";
 import Liquidity from "./components/pages/Liquidity";
 import CreateAirdrop from "./components/pages/CreateAirdrop";
 import AirdropList from "./components/pages/AirdropList/AirdropList";
@@ -29,6 +30,7 @@ import {
   getUserAirdrops,
   getAirdrops,
   getLPTokensLock,
+  getUserLocks,
 } from "./blockchain/functions";
 import store from "store2";
 
@@ -45,9 +47,15 @@ function App() {
   const [walletProvider, setWalletProvider] = useState();
   const [userBalance, setUserBalance] = useState("");
   const [launchpadsLoading, setLaunchpadsLoading] = useState(false);
+  const [airdropsLoading, setAirdropsLoading] = useState(false);
+  const [lockersLoading, setLockersLoading] = useState(false);
   const [userAirdrops, setUserAirdrops] = useState();
   const [regularLocker, setRegularLockers] = useState([]);
   const [liquidityLocker, setLiquidityLockers] = useState([]);
+  const [userLocks, setUserLocks] = useState({
+    normalLocks: [],
+    lpLocks: [],
+  });
 
   const connectMetamask = async () => {
     console.log("hola");
@@ -128,6 +136,7 @@ function App() {
 
     setUserAddress("");
   };
+
   const getUserInfo = async () => {
     if (userAddress) {
       console.log(userAddress, "user");
@@ -199,31 +208,67 @@ function App() {
   };
 
   const getAirdropsDetails = async () => {
-    setLaunchpadsLoading(true);
+    setAirdropsLoading(true);
     let receipt = await getAirdrops();
     if (receipt) {
       store.set("airdrops", receipt);
       setAirdrops(receipt);
     }
-    setLaunchpadsLoading(false);
+    setAirdropsLoading(false);
   };
 
   const getRegularLockers = async () => {
+    setLockersLoading(true);
     let receipt = await getNormalTokensLock();
     if (receipt) {
       console.log(receipt, "regular tokens");
       store.set("regularLockers", receipt);
       setRegularLockers(receipt);
-      return receipt;
     }
+    setLockersLoading(false);
+    return receipt;
   };
 
   const getLiquidityLockers = async () => {
+    setLockersLoading(true);
     let receipt = await getLPTokensLock();
     if (receipt) {
       console.log(receipt, "lp tokens");
       store.set("liquidityLockers", receipt);
       setLiquidityLockers(receipt);
+    }
+    setLockersLoading(false);
+    return receipt;
+  };
+
+  const fetchUserLocks = async () => {
+    if (userAddress) {
+      let receipt = await getUserLocks(userAddress);
+      if (receipt) {
+        let normalLocks = [];
+        let lpLocks = [];
+
+        receipt.normalLocks.map((el, index) => {
+          let temp = { ...el };
+          let data = regularLocker.find((i) => i[0] === el.token);
+          let parentIndex = regularLocker.findIndex((i) => i[0] === el.token);
+          temp = { ...temp, ...data, parentIndex };
+          normalLocks.push(temp);
+          return temp;
+        });
+
+        receipt.LpLocks.map((el, index) => {
+          let temp = { ...el };
+          let data = liquidityLocker.find((i) => i[0] === el.token);
+          let parentIndex = liquidityLocker.findIndex((i) => i[0] === el.token);
+          temp = { ...temp, ...data, parentIndex };
+          lpLocks.push(temp);
+          return temp;
+        });
+
+        store.set("userLockers", { normalLocks, lpLocks });
+        setUserLocks({ normalLocks, lpLocks });
+      }
     }
   };
 
@@ -257,11 +302,15 @@ function App() {
   useEffect(() => {
     let userLaunchs = store.get("userLaunchpads");
     let userAirdrops = store.get("userAirdrops");
+    let userLockers = store.get("userLockers");
     if (userLaunchs) {
       setUserTokens(userLaunchs);
     }
     if (userAirdrops) {
       setUserAirdrops(userAirdrops);
+    }
+    if (userLockers) {
+      setUserLocks(userLockers);
     }
     getUserInfo();
   }, [userAddress]);
@@ -359,6 +408,9 @@ function App() {
             path="/tokens"
             element={
               <Tokens
+                lockersLoading={lockersLoading}
+                userLocks={userLocks.normalLocks}
+                fetchUserLocks={fetchUserLocks}
                 getRegularLockers={getRegularLockers}
                 lockers={regularLocker}
               />
@@ -368,8 +420,21 @@ function App() {
             path="/tokens/:id"
             element={
               <ItemDetails
+                tokens={true}
                 getRegularLockers={getRegularLockers}
                 lockers={regularLocker}
+              />
+            }
+          />
+          <Route
+            path="/tokens/:id/:record"
+            element={
+              <RecordDetails
+                userAddress={userAddress}
+                getRegularLockers={getRegularLockers}
+                lockers={regularLocker}
+                walletType={walletType}
+                walletProvider={walletProvider}
               />
             }
           />
@@ -377,6 +442,9 @@ function App() {
             path="/liquidity"
             element={
               <Liquidity
+                lockersLoading={lockersLoading}
+                userLocks={userLocks.lpLocks}
+                fetchUserLocks={fetchUserLocks}
                 getLiquidityLockers={getLiquidityLockers}
                 lockers={liquidityLocker}
               />
@@ -384,7 +452,26 @@ function App() {
           />
           <Route
             path="/liquidity/:id"
-            element={<ItemDetails lockers={liquidityLocker} />}
+            element={
+              <ItemDetails
+                getRegularLockers={getLiquidityLockers}
+                lockers={liquidityLocker}
+              />
+            }
+          />
+
+          <Route
+            path="/liquidity/:id/:record"
+            element={
+              <RecordDetails
+                LP={true}
+                userAddress={userAddress}
+                getRegularLockers={getLiquidityLockers}
+                lockers={liquidityLocker}
+                walletType={walletType}
+                walletProvider={walletProvider}
+              />
+            }
           />
           <Route
             path="/create_airdrop"
@@ -402,7 +489,7 @@ function App() {
                 userAddress={userAddress}
                 fetchUserAirdrops={fetchUserAirdrops}
                 userAirdrops={userAirdrops}
-                launchpadsLoading={launchpadsLoading}
+                airdropsLoading={airdropsLoading}
                 airdrops={airdrops}
                 getAirdropsDetails={getAirdropsDetails}
               />

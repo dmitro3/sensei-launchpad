@@ -14,7 +14,7 @@ let empty = [
   "",
 ];
 
-export default function ItemDetails({ lockers, getRegularLockers }) {
+export default function ItemDetails({ tokens, lockers, getRegularLockers }) {
   let { id } = useParams();
   const [locker, setLocker] = useState(lockers[id] || empty);
   const [lockRecord, setLockRecord] = useState([]);
@@ -30,9 +30,10 @@ export default function ItemDetails({ lockers, getRegularLockers }) {
   };
 
   const getInitialLocker = async () => {
-    if (locker[3] === 0) {
+    if (locker[3] === 0 || !locker) {
       let newLockers = await getRegularLockers();
       if (newLockers) {
+        console.log(newLockers, "new Lockers");
         setLocker(newLockers[id]);
       }
     }
@@ -58,7 +59,7 @@ export default function ItemDetails({ lockers, getRegularLockers }) {
   return (
     <div className="details details--item container">
       <div className="details__header">
-        <Link to="/tokens">
+        <Link to={tokens ? "/tokens" : "/liquidity"}>
           <button className="details__back">
             <Arrow2 className="details__back-icon" />
           </button>
@@ -159,7 +160,14 @@ export default function ItemDetails({ lockers, getRegularLockers }) {
                       {smallScreen && (
                         <div className="items__title">Action</div>
                       )}
-                      <Link to="/" className="items__text items__text--link">
+                      <Link
+                        to={
+                          tokens
+                            ? `/tokens/${id}/${el.id}`
+                            : `/liquidity/${id}/${el.id}`
+                        }
+                        className="items__text items__text--link"
+                      >
                         View
                       </Link>
                     </div>

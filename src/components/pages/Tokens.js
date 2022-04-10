@@ -177,15 +177,28 @@ const list = [
   ],
 ];
 
-export default function Tokens({ lockers, getRegularLockers }) {
+export default function Tokens({
+  lockers,
+  getRegularLockers,
+  fetchUserLocks,
+  userLocks,
+  lockersLoading,
+}) {
   useEffect(() => {
     getRegularLockers();
+    fetchUserLocks();
   }, []);
 
   return (
     <div className="tokens container">
       <h1 className="title title--page">Tokens</h1>
-      <Items tokens={true} list={lockers} className="items--token" />
+      <Items
+        lockersLoading={lockersLoading}
+        userLocks={userLocks}
+        tokens={true}
+        list={lockers}
+        className="items--token"
+      />
     </div>
   );
 }

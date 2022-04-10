@@ -6,6 +6,7 @@ import More from "../../../Icons/More";
 import Telegram from "./../../../Icons/Telegram";
 import Twitter from "./../../../Icons/Twitter";
 import { useState } from "react";
+import truncate from "../../../services/truncate";
 
 export default function TokenCard({ item }) {
   const [flipped, setFlipped] = useState(false);
@@ -145,7 +146,7 @@ export default function TokenCard({ item }) {
               <span>KYC/DOXXED</span>
               <span>{`${item.kyc}`}</span>
             </li>
-            {/* <li className="card__item">
+            <li className="card__item">
               <span>Team Wallet Size</span>
               <span>{item.size}</span>
             </li>
@@ -159,8 +160,8 @@ export default function TokenCard({ item }) {
             </li>
             <li className="card__item">
               <span>LP Lock Duration</span>
-              <span>{item.lockDuration}</span>
-            </li> */}
+              <span>{item.lockDuration && `${item.lockDuration} days`} </span>
+            </li>
             <li className="card__item">
               <span>Audit</span>
               <span>{`${item.audit}`}</span>
@@ -168,7 +169,7 @@ export default function TokenCard({ item }) {
             <li className="card__item">
               <span>Website</span>
               <a target="_blank" href={item.website} className="card__copy">
-                {item.website}
+                {truncate(item.website, 20)}
               </a>
             </li>
             <li className="card__item">
@@ -194,18 +195,18 @@ export default function TokenCard({ item }) {
                 </li>
               </ul>
             </li>
-            {/* <li className="card__item">
+            <li className="card__item">
               <span>Utility</span>
-              <span>{item.utility}</span>
-            </li> */}
+              <span>{item.category}</span>
+            </li>
             <li className="card__item">
               <span>Private Sale</span>
               <span>{`${item.privateSale}`}</span>
             </li>
-            <li className="card__item">
+            {/* <li className="card__item">
               <span>Vesting</span>
               <span>{item.vesting}</span>
-            </li>
+            </li> */}
             <li className="card__item">
               <span>LP Ratio</span>
               <span>{item.ratio}</span>

@@ -230,7 +230,7 @@ export default function CreateLock({
             )}
           </div>
         )}
-        <p className="form__info">You will pay: 0 BUSD</p>
+        <p className="form__info">You will pay: 0 BNB</p>
         <button
           disabled={isLoading}
           onClick={form.isAllowed ? handleLock : handleApprove}

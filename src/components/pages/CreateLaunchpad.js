@@ -51,11 +51,45 @@ export default function CreateLaunchpad({ userAddress }) {
     discord: "",
     reddit: "",
     description: "",
+    category: "",
   });
   const [launchpadCreated, setLaunchpadCreated] = useState({
     address: "",
     tx: "",
   });
+
+  const checkFields = () => {
+    setErrors([]);
+    const {
+      price,
+      listingPrice,
+      softCap,
+      hardCap,
+      minBuy,
+      maxBuy,
+      startTime,
+      endTime,
+      lockupPeriod,
+      liquidityPerc,
+    } = launchDetails;
+
+    if (
+      !price ||
+      !listingPrice ||
+      !softCap ||
+      !hardCap ||
+      !minBuy ||
+      !maxBuy ||
+      !startTime ||
+      !endTime ||
+      !lockupPeriod ||
+      !liquidityPerc
+    ) {
+      setErrors(["You need to fill all the required fields."]);
+    } else {
+      setStep(step + 1);
+    }
+  };
 
   const uploadInfo = async () => {
     let jsonObj = JSON.stringify(extraInfo);
@@ -122,7 +156,10 @@ export default function CreateLaunchpad({ userAddress }) {
   const handleApprove = async () => {
     setIsLoading(true);
     console.log("approve");
-    let receipt = await approveDeployer(launchDetails.tokenAddress, "LAUNCHPAD");
+    let receipt = await approveDeployer(
+      launchDetails.tokenAddress,
+      "LAUNCHPAD"
+    );
     if (receipt) {
       console.log(receipt);
       checkTokenAllowance(true);
@@ -174,6 +211,7 @@ export default function CreateLaunchpad({ userAddress }) {
       )}
       {step === 2 && (
         <Step2
+          errors={errors}
           launchDetails={launchDetails}
           setLaunchDetails={setLaunchDetails}
           inputInfo="Create pool fee: 1 BNB"
@@ -208,6 +246,8 @@ export default function CreateLaunchpad({ userAddress }) {
           onClick={
             step === 1 && !launchDetails.isAllowed
               ? handleApprove
+              : step === 2
+              ? checkFields
               : step === 3
               ? uploadInfo
               : launchpadCreated.tx
