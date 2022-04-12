@@ -120,8 +120,8 @@ export default function Items({
                                 <Link
                                   to={
                                     tokens
-                                      ? `/tokens/${index}`
-                                      : `/liquidity/${index}`
+                                      ? `/tokens/${el[0]}`
+                                      : `/liquidity/${el[0]}`
                                   }
                                   className="items__text items__text--link"
                                 >

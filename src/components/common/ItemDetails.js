@@ -16,7 +16,7 @@ let empty = [
 
 export default function ItemDetails({ tokens, lockers, getRegularLockers }) {
   let { id } = useParams();
-  const [locker, setLocker] = useState(lockers[id] || empty);
+  const [locker, setLocker] = useState(lockers.find((el) => el.token === id)|| empty);
   const [lockRecord, setLockRecord] = useState([]);
 
   const getLockRecord = async () => {
@@ -34,7 +34,7 @@ export default function ItemDetails({ tokens, lockers, getRegularLockers }) {
       let newLockers = await getRegularLockers();
       if (newLockers) {
         console.log(newLockers, "new Lockers");
-        setLocker(newLockers[id]);
+        setLocker(newLockers.find((el) => el.token === id))
       }
     }
   };
@@ -54,6 +54,7 @@ export default function ItemDetails({ tokens, lockers, getRegularLockers }) {
 
   useEffect(() => {
     getLockRecord();
+    console.log(lockers, "lockers")
   }, [locker]);
 
   return (
@@ -129,7 +130,7 @@ export default function ItemDetails({ tokens, lockers, getRegularLockers }) {
           <ul className="items__list">
             {lockRecord.map((el, index) => {
               return (
-                <>
+                <div key={index}>
                   <li className="items__list-item">
                     <div className="items__column items__column--1">
                       {smallScreen && (
@@ -172,7 +173,7 @@ export default function ItemDetails({ tokens, lockers, getRegularLockers }) {
                       </Link>
                     </div>
                   </li>
-                </>
+                </div>
               );
             })}
           </ul>

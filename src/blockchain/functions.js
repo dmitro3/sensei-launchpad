@@ -321,7 +321,7 @@ export const getUserLocks = async (_address) => {
 
     return { normalLocks, LpLocks };
   } catch (error) {
-    console.log(error, "getTokenLockRecord");
+    console.log(error, "getUserLocks");
   }
 };
 

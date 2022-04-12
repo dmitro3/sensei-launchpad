@@ -15,8 +15,8 @@ let empty = [
   "0x0000000000000000000000000000000000000000",
   0,
   0,
-  "",
-  "",
+  "0",
+  "0",
 ];
 
 export default function ItemDetails({
@@ -30,7 +30,7 @@ export default function ItemDetails({
   const navigate = useNavigate();
   let { id } = useParams();
   let { record } = useParams();
-  const [locker, setLocker] = useState(lockers[id] || empty);
+  const [locker, setLocker] = useState(lockers.find((el) => el.token === id) || empty);
   const [lockRecord, setLockRecord] = useState([]);
   const [singleRecord, setSingleRecord] = useState([]);
   const [pairName, setPairName] = useState("");
@@ -81,7 +81,7 @@ export default function ItemDetails({
       let newLockers = await getRegularLockers();
 
       if (newLockers) {
-        setLocker(newLockers[id]);
+        setLocker(newLockers.find((el) => el.token === id));
       }
     }
   };
@@ -100,6 +100,9 @@ export default function ItemDetails({
   const smallScreen = useSmallScreen(768);
 
   const getData = (time) => {
+    if(!time){
+      return "-"
+    }
     let data = new Date(time * 1000).toString();
     let split = data.split(" ");
 
@@ -131,7 +134,7 @@ export default function ItemDetails({
         <h5 className="details__countdown-title">Unlocks In:</h5>
 
         <Countdown
-          date={new Date(singleRecord.unlockDate * 1000)}
+          date={singleRecord.unlockDate ? new Date(singleRecord.unlockDate * 1000) : new Date(0)}
           renderer={countdownRenderer}
         />
       </div>
@@ -178,7 +181,7 @@ export default function ItemDetails({
           <li className="details__item">
             <span className="details__item-text">Total Amount Locked</span>
             <span className="details__item-text details__item-text--value">
-              {(singleRecord.amount / 10 ** locker[3]).toFixed(2)} {locker[5]}
+              {singleRecord.amount ? (singleRecord.amount / 10 ** locker[3]).toFixed(2) : ""} {locker[5]}
             </span>
           </li>
           {/* <li className="details__item">
@@ -204,7 +207,7 @@ export default function ItemDetails({
           <li className="details__item">
             <span className="details__item-text">Unlock Date</span>
             <span className="details__item-text details__item-text--value">
-              {getData(singleRecord.unlockDate)}
+              {getData(singleRecord.unlockDate) }
             </span>
           </li>
         </ul>

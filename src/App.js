@@ -393,7 +393,7 @@ function App() {
             }
           />
           <Route
-            path="/launchpad_list/:id"
+            path="/launchpad_list/:id/:address"
             element={
               <TokenDetails
                 userAddress={userAddress}

@@ -39,9 +39,9 @@ export default function TokenDetails({
   setPopupShow,
   tokens,
 }) {
-  let { id } = useParams();
+  let { id, address } = useParams();
   const [token, setToken] = useState(
-    tokens.find((el) => el.id === Number(id)) || launchpadsArray[0]
+    tokens.find((el) => el.address === address) || launchpadsArray[0]
   );
   const [value, setValue] = useState("");
   const [comment, setComment] = useState("");
