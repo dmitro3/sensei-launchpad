@@ -353,7 +353,7 @@ export default function TokenDetails({
               <div className="progress__bar">
                 <div
                   className="progress__track"
-                  style={{ width: token.progress }}
+                  style={{ width: `${token.progress}%` }}
                 ></div>
               </div>
               <div className="progress__row">
