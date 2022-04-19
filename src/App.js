@@ -31,6 +31,7 @@ import {
   getAirdrops,
   getLPTokensLock,
   getUserLocks,
+  getDeployerStats,
 } from "./blockchain/functions";
 import store from "store2";
 
@@ -55,6 +56,11 @@ function App() {
   const [userLocks, setUserLocks] = useState({
     normalLocks: [],
     lpLocks: [],
+  });
+  const [stats, setStats] = useState({
+    projects: "",
+    invested: "",
+    participants: "",
   });
 
   const connectMetamask = async () => {
@@ -272,6 +278,11 @@ function App() {
     }
   };
 
+  const getStats = async () => {
+    let newStats = await getDeployerStats();
+    setStats({ ...newStats });
+  };
+
   useEffect(() => {
     let user = window.localStorage.getItem("userAddress");
     let storedLaunchpads = store.get("launchpads");
@@ -296,7 +307,7 @@ function App() {
       connectMetamask();
     }
 
-    // getRegularLockers();
+    getStats();
   }, []);
 
   useEffect(() => {
@@ -346,7 +357,7 @@ function App() {
       />
       <main className="main">
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Home stats={stats} />} />
           <Route
             path="/create_launchpad"
             element={

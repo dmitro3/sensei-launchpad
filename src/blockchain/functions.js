@@ -24,7 +24,7 @@ let provider = new ethers.providers.JsonRpcProvider(
   "https://data-seed-prebsc-2-s2.binance.org:8545/"
 );
 
-let deployerAddress = "0x039b7F5Be8410c7B962D603d7514dD7C20E2CD8F";
+let deployerAddress = "0xF3168bf0E3d904F8f5466Ef11e954091aa3f7c01";
 let lockerAddress = "0x9D367D8562957c68c47Baf54E128253921dd0279";
 let airdropDeployer = "0x985CD8ec7a7AA0B10b98E6e7E5b172D2E1B55b2e";
 
@@ -42,7 +42,6 @@ let airdropDeployerContract = new ethers.Contract(
   provider
 );
 
-// function getAllContributors () external view returns (User[] memory usersData){
 export const isAddress = async (_address) => {
   let result = await ethers.utils.isAddress(_address);
   console.log("result", result);
@@ -309,9 +308,6 @@ export const getNormalTokensLock = async () => {
   }
 };
 
-// normalLocksForUser
-// lpLocksForUser
-
 export const getUserLocks = async (_address) => {
   try {
     let normalLocks = await lockerContract.normalLocksForUser(_address);
@@ -353,8 +349,6 @@ export const getLPTokensLock = async () => {
     console.log(error, "getLPTokensLock");
   }
 };
-
-const getLocksInfo = async () => {};
 
 export const lock = async (params, walletType, walletProvider) => {
   try {
@@ -490,52 +484,18 @@ export const deployToken = async (type, params, walletType, walletProvider) => {
   }
 };
 
-export const launchpadSchema = {
-  name: "",
-  image: "",
-  desc: "",
-  likes: 0,
-  audited: false,
-  verified: false,
-  bnbPrice: 0,
-  cap: [0, 0],
-  progress: 0,
-  liquidity: 0,
-  lockup: 0,
-  cancelled: false,
-  startDate: 0,
-  endDate: 0,
-  category: "",
-  score: 0,
-  kyc: false,
-  size: "",
-  locked: "",
-  lockPeriod: "",
-  lockDuration: "",
-  audit: "",
-  website: "",
-  social: { tg: "/", twitter: "/" },
-  utility: "",
-  privateSale: "",
-  vesting: "",
-  ratio: "",
-  voteScore: "",
-  level: "",
-  id: "",
-  admin: "",
-  address: "",
-  symbol: "",
-  decimals: "",
-  maxSupply: "",
-  listPrice: "",
-  buy: "",
-  sold: "",
-  status: "",
-  tokenForSale: "",
-  tokenForLiquidity: "",
-  launchpadAddress: "",
-  values: [],
-  userContribution: 0,
+export const getDeployerStats = async () => {
+  try {
+    let stats = await deployerContract.getStats();
+    console.log(stats, "stats");
+    return {
+      projects: Number(stats._projects),
+      invested: ethers.utils.formatUnits(stats._invested, 18),
+      participants: Number(stats._participants),
+    };
+  } catch (error) {
+    console.log(error, "launchpadDetails");
+  }
 };
 
 export const launchpadDetails = async () => {
@@ -699,8 +659,9 @@ export const getLaunchpadInfo = async (id) => {
       // { title: "Burnt", value: 37, color: "#0993EC", id: 2, active: false },
     ];
     newData.id = id;
-    newData.audited = false;
-    newData.verified = true;
+    newData.audited = extraData.audited ? extraData.audited : false;
+    newData.verified = extraData.verified ? extraData.verified : true;
+    newData.level = extraData.level ? extraData.level : "low";
     newData.userContribution = 0;
 
     console.log(launchpadData, "launchpad data", newData, "new data");
@@ -988,9 +949,6 @@ export const createAirdrop = async (
     }
   }
 };
-// reateAirdrop(
-//   address _token,
-//   string memory _URIData
 
 const tokenContractInstance = async (
   tokenAddress,

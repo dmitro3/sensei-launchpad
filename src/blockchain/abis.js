@@ -1,43 +1,5 @@
 export const deployerABI = [
   {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: "address",
-        name: "previousOwner",
-        type: "address",
-      },
-      {
-        indexed: true,
-        internalType: "address",
-        name: "newOwner",
-        type: "address",
-      },
-    ],
-    name: "OwnershipTransferred",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: false,
-        internalType: "address",
-        name: "newTokenAddress",
-        type: "address",
-      },
-      {
-        indexed: false,
-        internalType: "address",
-        name: "deployer",
-        type: "address",
-      },
-    ],
-    name: "launchpadDeployed",
-    type: "event",
-  },
-  {
     inputs: [
       {
         internalType: "address",
@@ -51,6 +13,19 @@ export const deployerABI = [
       },
     ],
     name: "addToUserLaunchpad",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "_newLocker",
+        type: "address",
+      },
+    ],
+    name: "changeLockerAddress",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -106,6 +81,113 @@ export const deployerABI = [
     name: "createLaunchpad",
     outputs: [],
     stateMutability: "payable",
+    type: "function",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "previousOwner",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "newOwner",
+        type: "address",
+      },
+    ],
+    name: "OwnershipTransferred",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "address",
+        name: "newTokenAddress",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "address",
+        name: "deployer",
+        type: "address",
+      },
+    ],
+    name: "launchpadDeployed",
+    type: "event",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "_token",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "_launchpad",
+        type: "address",
+      },
+    ],
+    name: "removeLaunchpad",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "renounceOwnership",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "_price",
+        type: "uint256",
+      },
+    ],
+    name: "setPrice",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "newOwner",
+        type: "address",
+      },
+    ],
+    name: "transferOwnership",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "_invested",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "_contributors",
+        type: "uint256",
+      },
+    ],
+    name: "updateStats",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
   {
@@ -204,6 +286,29 @@ export const deployerABI = [
         internalType: "bool",
         name: "_remainingClaimed",
         type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "getStats",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "_projects",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "_invested",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "_participants",
+        type: "uint256",
       },
     ],
     stateMutability: "view",
@@ -317,54 +422,42 @@ export const deployerABI = [
     type: "function",
   },
   {
-    inputs: [
+    inputs: [],
+    name: "senseiLocker",
+    outputs: [
       {
         internalType: "address",
-        name: "_token",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "_launchpad",
+        name: "",
         type: "address",
       },
     ],
-    name: "removeLaunchpad",
-    outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "view",
     type: "function",
   },
   {
     inputs: [],
-    name: "renounceOwnership",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
+    name: "totalInvested",
+    outputs: [
       {
         internalType: "uint256",
-        name: "_price",
+        name: "",
         type: "uint256",
       },
     ],
-    name: "setPrice",
-    outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "view",
     type: "function",
   },
   {
-    inputs: [
+    inputs: [],
+    name: "totalParticipants",
+    outputs: [
       {
-        internalType: "address",
-        name: "newOwner",
-        type: "address",
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
       },
     ],
-    name: "transferOwnership",
-    outputs: [],
-    stateMutability: "nonpayable",
+    stateMutability: "view",
     type: "function",
   },
   {
