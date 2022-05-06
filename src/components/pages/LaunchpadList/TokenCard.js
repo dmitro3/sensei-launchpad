@@ -22,7 +22,7 @@ export default function TokenCard({ item }) {
           to={`/launchpad_list/${item.id}/${item.address}`}
           className="card__button button"
         >
-          View Airdrop
+          View Details
         </Link>
         {!item.cancelled && item.status !== 0 && (
           <div className="card__date">
