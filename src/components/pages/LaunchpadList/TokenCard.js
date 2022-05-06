@@ -18,10 +18,13 @@ export default function TokenCard({ item }) {
   const CardFooter = () => {
     return (
       <div className="card__row card__row--footer">
-        <Link to={`/launchpad_list/${item.id}/${item.address}`} className="card__button button">
+        <Link
+          to={`/launchpad_list/${item.id}/${item.address}`}
+          className="card__button button"
+        >
           View Airdrop
         </Link>
-        {!item.cancelled && (
+        {!item.cancelled && item.status !== 0 && (
           <div className="card__date">
             <h6 className="card__date-title">
               {item.startDate < Date.now()

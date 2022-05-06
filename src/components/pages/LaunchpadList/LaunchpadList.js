@@ -84,17 +84,18 @@ export default function LaunchpadList({
       )}
       <ul className="cards-list cards-list--catalog">
         {page === 0 &&
-          tokens.map((item) => {
+          tokens.length > 0 &&
+          tokens.map((item, index) => {
             return (
-              <li className="cards-list__item" key={item.id}>
+              <li className="cards-list__item" key={index}>
                 <TokenCard item={item} />
               </li>
             );
           })}
         {page === 1 &&
-          userTokens.map((item) => {
+          userTokens.map((item, index) => {
             return (
-              <li className="cards-list__item" key={item.id}>
+              <li className="cards-list__item" key={index}>
                 <TokenCard item={item} />
               </li>
             );

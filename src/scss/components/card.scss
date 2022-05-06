@@ -280,12 +280,16 @@
 }
 
 .card {
+  &--very-high &__face {
+    box-shadow: 0px 6px 20px rgba(190, 182, 33, 0.24);
+  }
+
   &--high &__face {
     box-shadow: 0px 6px 20px rgba(53, 166, 71, 0.24);
   }
 
   &--mid &__face {
-    box-shadow: 0px 6px 20px rgba(225, 228, 79, 0.24);
+    box-shadow: 0px 6px 20px rgba(211, 103, 20, 0.24);
   }
 
   &--low &__face {

@@ -24,7 +24,7 @@ let provider = new ethers.providers.JsonRpcProvider(
   "https://data-seed-prebsc-2-s2.binance.org:8545/"
 );
 
-let deployerAddress = "0xF3168bf0E3d904F8f5466Ef11e954091aa3f7c01";
+let deployerAddress = "0xD702150E5d67C4243DFBD62798EAc2Fe8059D56c";
 let lockerAddress = "0x9D367D8562957c68c47Baf54E128253921dd0279";
 let airdropDeployer = "0x985CD8ec7a7AA0B10b98E6e7E5b172D2E1B55b2e";
 
@@ -502,6 +502,13 @@ export const launchpadDetails = async () => {
   try {
     let count = await deployerContract.launchpadCount();
 
+    console.log(count, "count");
+    // let filledArray = new Array(10);
+
+    // for (let i = 0; i < 10; i++) {
+    //   filledArray[i] = i + 10;
+    // }
+
     let data = [];
 
     for (let i = 0; i < count; i++) {
@@ -509,7 +516,7 @@ export const launchpadDetails = async () => {
       data.unshift(newData);
     }
 
-    console.log(data);
+    console.log(data, "data");
     return data;
   } catch (error) {
     console.log(error, "launchpadDetails");
@@ -530,56 +537,6 @@ export const getUserContributions = async (userAddress) => {
 
 export const getLaunchpadInfo = async (id) => {
   try {
-    let newData = {
-      name: "",
-      image: "",
-      desc: "",
-      likes: 0,
-      audited: false,
-      verified: false,
-      bnbPrice: 0,
-      cap: [0, 0],
-      progress: 0,
-      liquidity: 0,
-      lockup: 0,
-      cancelled: false,
-      startDate: 0,
-      endDate: 0,
-      category: "",
-      score: 0,
-      kyc: false,
-      audit: false,
-      size: "",
-      locked: "",
-      lockPeriod: "",
-      lockDuration: "",
-      audit: false,
-      website: "",
-      social: { tg: "/", twitter: "/" },
-      utility: "",
-      privateSale: "",
-      vesting: "",
-      ratio: "",
-      voteScore: "",
-      level: "",
-      id: "",
-      admin: "",
-      address: "",
-      symbol: "",
-      decimals: "",
-      maxSupply: "",
-      listPrice: "",
-      buy: "",
-      sold: "",
-      tokenForSale: "",
-      tokenForLiquidity: "",
-      launchpadAddress: "",
-      status: "",
-      values: [],
-      userContribution: 0,
-      level: "low",
-    };
-
     let launchpadData = await deployerContract.getInfo(id);
     let extraData;
     try {
@@ -590,45 +547,75 @@ export const getLaunchpadInfo = async (id) => {
       console.log(error, "axios");
     }
 
-    newData.symbol = launchpadData.symbol[0];
-    newData.name = launchpadData.symbol[1];
-    newData.decimals = launchpadData.decimals;
-    newData.image = extraData.logo ? extraData.logo : senseiLogo;
-    newData.maxSupply = launchpadData.data[12] / 10 ** launchpadData.decimals;
-    newData.desc = extraData.description;
-    newData.bnbPrice = launchpadData.data[0] / 10000;
-    newData.category = extraData.category.title;
-    newData.listPrice = launchpadData.data[1] / 10000;
-    newData.ratio = `1BNB / ${launchpadData.data[1] / 10000}${
-      launchpadData.symbol[0]
-    }`;
-    newData.cap = [
-      Number(launchpadData.data[2]),
-      Number(launchpadData.data[3]),
-    ];
-    newData.buy = [
-      Number(launchpadData.data[4]),
-      Number(launchpadData.data[5]),
-    ];
-    newData.sold = Number(launchpadData.data[10]);
-    newData.likes = Number(launchpadData.data[11]);
-    newData.progress = (launchpadData.data[10] * 100) / newData.cap[1] || 0;
-    newData.liquidity = Number(launchpadData.data[9]);
-    newData.lockup = Number(launchpadData.data[8]);
-    newData.lockDuration = Number(launchpadData.data[8]);
-    newData.tokenForSale = (newData.bnbPrice * newData.cap[1]) / 10 ** 18;
-    newData.tokenForLiquidity =
-      (newData.listPrice * newData.cap[1] * newData.liquidity) / 100 / 10 ** 18;
-    newData.cancelled = launchpadData._status === 2;
-    newData.status = launchpadData._status;
-    newData.startDate = launchpadData.data[6] * 1000;
-    newData.endDate = launchpadData.data[7] * 1000;
-    newData.website = extraData.website;
-    newData.social = { tg: extraData.telegram, twitter: extraData.twitter };
-    newData.privateSale = launchpadData._whitelistActive;
-    newData.admin = launchpadData._contractAdmin;
-    newData.address = launchpadData._tokenAddress;
-    newData.launchpadAddress = launchpadData.contractAddress;
+    console.log(launchpadData, extraData, "launchpad data");
+
+    let newData = {
+      name: launchpadData.symbol[1],
+      image: extraData.logo ? extraData.logo : senseiLogo,
+      desc: extraData.description,
+      likes: Number(launchpadData.data[11]),
+      audited: extraData.audited ? extraData.audited : false,
+      verified: launchpadData.booleans[0],
+      bnbPrice: launchpadData.data[0] / 10000,
+      cap: [Number(launchpadData.data[2]), Number(launchpadData.data[3])],
+      progress:
+        (launchpadData.data[10] * 100) / Number(launchpadData.data[3]) || 0,
+      liquidity: Number(launchpadData.data[9]),
+      lockup: Number(launchpadData.data[8]),
+      cancelled: launchpadData._status === 3,
+      startDate: launchpadData.data[6] * 1000,
+      endDate: launchpadData.data[7] * 1000,
+      category: extraData.category.title,
+      score: Number(launchpadData._score),
+      kyc: launchpadData.booleans[0],
+      audit: extraData.audited ? extraData.audited : false,
+      size: "",
+      locked: "",
+      lockPeriod: "",
+      lockDuration: Number(launchpadData.data[8]),
+      website: extraData.website,
+      social: {
+        tg: extraData.telegram,
+        twitter: extraData.twitter,
+        discord: extraData.discord,
+        facebook: extraData.facebook,
+        github: extraData.github,
+        instagram: extraData.instagram,
+        reddit: extraData.reddit,
+      },
+      utility: extraData.category.title,
+      privateSale: launchpadData.booleans[1],
+      vesting: "",
+      ratio: `1BNB / ${launchpadData.data[1] / 10000}${
+        launchpadData.symbol[0]
+      }`,
+      voteScore: Number(launchpadData.data[11]),
+      level: getScore(Number(launchpadData._score)),
+      id: id,
+      admin: launchpadData._contractAdmin,
+      address: launchpadData._tokenAddress,
+      symbol: launchpadData.symbol[0],
+      decimals: launchpadData.decimals,
+      maxSupply: launchpadData.data[12] / 10 ** launchpadData.decimals,
+      bnbPrice: launchpadData.data[0] / 10000,
+      listPrice: launchpadData.data[1] / 10000,
+      buy: [Number(launchpadData.data[4]), Number(launchpadData.data[5])],
+      sold: Number(launchpadData.data[10]),
+      tokenForSale:
+        ((launchpadData.data[0] / 10000) * Number(launchpadData.data[3])) /
+        10 ** 18,
+      tokenForLiquidity:
+        ((launchpadData.data[1] / 10000) *
+          Number(launchpadData.data[3]) *
+          Number(launchpadData.data[9])) /
+        100 /
+        10 ** 18,
+      launchpadAddress: launchpadData.contractAddress,
+      status: launchpadData._status,
+      values: [],
+      userContribution: 0,
+    };
+
     newData.values = [
       {
         title: "Presale",
@@ -658,17 +645,52 @@ export const getLaunchpadInfo = async (id) => {
       },
       // { title: "Burnt", value: 37, color: "#0993EC", id: 2, active: false },
     ];
-    newData.id = id;
-    newData.audited = extraData.audited ? extraData.audited : false;
-    newData.verified = extraData.verified ? extraData.verified : true;
-    newData.level = extraData.level ? extraData.level : "low";
-    newData.userContribution = 0;
 
     console.log(launchpadData, "launchpad data", newData, "new data");
 
     return newData;
   } catch (error) {
-    console.log("getLaunchpadInfo");
+    console.log(error, "getLaunchpadInfo");
+  }
+};
+
+const getScore = (score) => {
+  return score < 31
+    ? "low"
+    : score < 51
+    ? "mid"
+    : score < 91
+    ? "high"
+    : "very-high";
+};
+
+// export const function initSale(uint256 _score, bool _kyc) external onlyOwn
+export const initSale = async (
+  _score,
+  _kyc,
+  launchAddress,
+  walletType,
+  walletProvider
+) => {
+  try {
+    let contractInstance = await launchpadContractInstance(
+      launchAddress,
+      walletType,
+      walletProvider
+    );
+
+    let score = Number(_score).toString();
+
+    let tx = await contractInstance.initSale(score, _kyc);
+
+    let receipt = await tx.wait();
+
+    return receipt;
+  } catch (error) {
+    console.log(error);
+    if (error.data) {
+      window.alert(error.data.message);
+    }
   }
 };
 

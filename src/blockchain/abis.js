@@ -253,6 +253,11 @@ export const deployerABI = [
         type: "uint8",
       },
       {
+        internalType: "uint256",
+        name: "_score",
+        type: "uint256",
+      },
+      {
         internalType: "string",
         name: "_URIData",
         type: "string",
@@ -278,14 +283,9 @@ export const deployerABI = [
         type: "address",
       },
       {
-        internalType: "bool",
-        name: "_whitelistActive",
-        type: "bool",
-      },
-      {
-        internalType: "bool",
-        name: "_remainingClaimed",
-        type: "bool",
+        internalType: "bool[]",
+        name: "booleans",
+        type: "bool[]",
       },
     ],
     stateMutability: "view",
@@ -778,6 +778,19 @@ export const launchpadABI = [
   },
   {
     inputs: [],
+    name: "contributors",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "decimals",
     outputs: [
       {
@@ -838,6 +851,11 @@ export const launchpadABI = [
         type: "uint8",
       },
       {
+        internalType: "uint256",
+        name: "_score",
+        type: "uint256",
+      },
+      {
         internalType: "string",
         name: "_URIData",
         type: "string",
@@ -853,14 +871,9 @@ export const launchpadABI = [
         type: "address",
       },
       {
-        internalType: "bool",
-        name: "_whitelistActive",
-        type: "bool",
-      },
-      {
-        internalType: "bool",
-        name: "_remainingClaimed",
-        type: "bool",
+        internalType: "bool[]",
+        name: "booleans",
+        type: "bool[]",
       },
     ],
     stateMutability: "view",
@@ -895,12 +908,43 @@ export const launchpadABI = [
   {
     inputs: [
       {
+        internalType: "uint256",
+        name: "_score",
+        type: "uint256",
+      },
+      {
+        internalType: "bool",
+        name: "_kyc",
+        type: "bool",
+      },
+    ],
+    name: "initSale",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
         internalType: "address",
         name: "",
         type: "address",
       },
     ],
     name: "isWhitelisted",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "kyc",
     outputs: [
       {
         internalType: "bool",
@@ -1033,6 +1077,19 @@ export const launchpadABI = [
     name: "renounceOwnership",
     outputs: [],
     stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "smartScore",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
     type: "function",
   },
   {

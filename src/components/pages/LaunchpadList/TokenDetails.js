@@ -22,7 +22,9 @@ import {
   getLaunchpadInfo,
   finishSale,
   getUserContributions,
+  initSale,
 } from "../../../blockchain/functions";
+import NumberFormat from "react-number-format";
 
 const sortArray = [
   { title: "Sort by best", id: 0, selected: true },
@@ -43,6 +45,8 @@ export default function TokenDetails({
   const [token, setToken] = useState(
     tokens.find((el) => el.address === address) || launchpadsArray[0]
   );
+  const [smartScore, setSmartScore] = useState("");
+  const [KYC, setKYC] = useState(false);
   const [value, setValue] = useState("");
   const [comment, setComment] = useState("");
   const [chart, setChart] = useState([]);
@@ -72,6 +76,25 @@ export default function TokenDetails({
           progress: info.progress,
           userContribution: contributions[1][index],
         });
+      }
+    }
+    setIsLoading(false);
+  };
+
+  const handleInit = async () => {
+    setIsLoading(true);
+    let receipt = await initSale(
+      smartScore,
+      KYC,
+      token.launchpadAddress,
+      walletType,
+      walletProvider
+    );
+    if (receipt) {
+      console.log(receipt);
+      let info = await getLaunchpadInfo(id);
+      if (info) {
+        setToken({ ...token, status: info.status });
       }
     }
     setIsLoading(false);
@@ -197,7 +220,7 @@ export default function TokenDetails({
                 className="social--details details__social"
               />
             </div>
-            <Badge item={token} className="details__badge" />
+            <Badge item={token} />
           </div>
           <ul className="details__list details__list--main">
             <li className="details__item">
@@ -332,22 +355,26 @@ export default function TokenDetails({
             <h5 className="details__countdown-title">
               {token.cancelled
                 ? "Cancelled"
+                : token.status === 0
+                ? "Waiting for Approval :"
                 : token.startDate < Date.now()
                 ? token.endDate < Date.now()
                   ? "Sale Ended"
                   : "Presale Ends In"
                 : "Presale Starts In"}
             </h5>
-            {!token.cancelled && token.endDate > Date.now() && (
-              <Countdown
-                date={
-                  token.startDate > Date.now()
-                    ? new Date(token.startDate)
-                    : new Date(token.endDate)
-                }
-                renderer={countdownRenderer}
-              />
-            )}
+            {!token.cancelled &&
+              token.status !== 0 &&
+              token.endDate > Date.now() && (
+                <Countdown
+                  date={
+                    token.startDate > Date.now()
+                      ? new Date(token.startDate)
+                      : new Date(token.endDate)
+                  }
+                  renderer={countdownRenderer}
+                />
+              )}
 
             <div className="progress details__progress">
               <div className="progress__bar">
@@ -509,6 +536,47 @@ export default function TokenDetails({
                 );
               })}
             </ul>
+          </div>
+        </div>
+        <div className="details__wrapper">
+          <div className="chart">
+            <h5 className="chart__title">Approve Launchpad</h5>
+            <br />
+            <div className="input-wrapper__row">
+              <input
+                type="number"
+                className="input-wrapper__input"
+                value={smartScore}
+                onChange={(e) =>
+                  setSmartScore(
+                    e.target.value > 100
+                      ? 100
+                      : e.target.value < 0
+                      ? 0
+                      : e.target.value
+                  )
+                }
+                placeholder="Smart Score"
+              />
+            </div>
+            <br />
+            <h5 className="chart__title">KYC</h5>
+            <br />
+            <label className="switch">
+              <input
+                type="checkbox"
+                checked={KYC}
+                onChange={(e) => setKYC(e.target.checked)}
+              />
+              <span className="slider round"></span>
+            </label>
+
+            <button
+              onClick={handleInit}
+              className="button button--red details__button"
+            >
+              Approve
+            </button>
           </div>
         </div>
       </div>

@@ -3,9 +3,11 @@ export default function Badge({ item, className }) {
     <div
       className={
         "badge " +
-        (item.cancelled
+        (item.status === 0
+          ? "upcoming"
+          : item.cancelled
           ? "cancelled "
-          : item.status === 1
+          : item.status === 2
           ? "claiming"
           : item.startDate < Date.now()
           ? item.endDate < Date.now()
@@ -15,9 +17,11 @@ export default function Badge({ item, className }) {
         (className ? className : "")
       }
     >
-      {item.cancelled
+      {item.status === 0
+        ? "Revision"
+        : item.cancelled
         ? "Cancelled"
-        : item.status === 1
+        : item.status === 2
         ? "Claiming"
         : item.startDate < Date.now()
         ? item.endDate < Date.now()
