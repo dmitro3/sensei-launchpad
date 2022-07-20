@@ -11,8 +11,8 @@ ReactDOM.render(
   <React.StrictMode>
     <Router>
       <MoralisProvider
-        serverUrl="https://t1dgflyg2uft.bigmoralis.com:2053/server"
-        appId="q6NZenv0ACYx24jH2tfz1ZrQSNhyLRUqDmofDy3f"
+        serverUrl="https://neychcwnlu85.usemoralis.com:2053/server"
+        appId="wzO5YQHUHaymjZMnqplPQh6YAtsJZarrjaxrmraD"
       >
         <App />
       </MoralisProvider>

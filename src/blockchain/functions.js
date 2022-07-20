@@ -24,9 +24,9 @@ let provider = new ethers.providers.JsonRpcProvider(
   "https://data-seed-prebsc-2-s2.binance.org:8545/"
 );
 
-let deployerAddress = "0xD702150E5d67C4243DFBD62798EAc2Fe8059D56c";
-let lockerAddress = "0x9D367D8562957c68c47Baf54E128253921dd0279";
-let airdropDeployer = "0x985CD8ec7a7AA0B10b98E6e7E5b172D2E1B55b2e";
+let deployerAddress = "0xE13f7ec124992b86aEBB422Aa15b8C96A246A9E1";
+let lockerAddress = "0x2B8ED5db3a930AC0200f3e58E45E5FAf2c91478D";
+let airdropDeployer = "0x21ce15EF3C4752D2C656595a1B8156892364171F";
 
 let deployerContract = new ethers.Contract(
   deployerAddress,
