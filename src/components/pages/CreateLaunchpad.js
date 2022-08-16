@@ -13,6 +13,22 @@ import {
 } from "../../blockchain/functions";
 import { create } from "ipfs-http-client";
 
+const projectId = "1xqn5K7B9K3GiKPouHjJQafymbR";
+const projectSecret = "001788eac00191371f6aababea7d08cf";
+
+const auth =
+  "Basic " + Buffer.from(projectId + ":" + projectSecret).toString("base64");
+
+const client = await ipfsClient.create({
+  host: "ipfs.infura.io",
+  port: 5001,
+  protocol: "https",
+  apiPath: "/api/v0",
+  headers: {
+    authorization: auth,
+  },
+});
+
 export default function CreateLaunchpad({
   userAddress,
   walletType,
@@ -20,7 +36,6 @@ export default function CreateLaunchpad({
 }) {
   const navigate = useNavigate();
   let { id } = useParams();
-  const client = create("https://ipfs.infura.io:5001/api/v0");
   const Web3Api = useMoralisWeb3Api();
   const [isLoading, setIsLoading] = useState(false);
   const [step, setStep] = useState(1);
