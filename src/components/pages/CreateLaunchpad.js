@@ -19,15 +19,7 @@ const projectSecret = "001788eac00191371f6aababea7d08cf";
 const auth =
   "Basic " + Buffer.from(projectId + ":" + projectSecret).toString("base64");
 
-const client = await ipfsClient.create({
-  host: "ipfs.infura.io",
-  port: 5001,
-  protocol: "https",
-  apiPath: "/api/v0",
-  headers: {
-    authorization: auth,
-  },
-});
+
 
 export default function CreateLaunchpad({
   userAddress,
@@ -75,6 +67,16 @@ export default function CreateLaunchpad({
   const [launchpadCreated, setLaunchpadCreated] = useState({
     address: "",
     tx: "",
+  });
+
+  const client = await ipfsClient.create({
+    host: "ipfs.infura.io",
+    port: 5001,
+    protocol: "https",
+    apiPath: "/api/v0",
+    headers: {
+      authorization: auth,
+    },
   });
 
   const checkFields = () => {
