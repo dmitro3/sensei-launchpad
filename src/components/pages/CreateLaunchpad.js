@@ -19,8 +19,6 @@ const projectSecret = "001788eac00191371f6aababea7d08cf";
 const auth =
   "Basic " + Buffer.from(projectId + ":" + projectSecret).toString("base64");
 
-
-
 export default function CreateLaunchpad({
   userAddress,
   walletType,
@@ -69,7 +67,7 @@ export default function CreateLaunchpad({
     tx: "",
   });
 
-  const client = await ipfsClient.create({
+  const client = await create({
     host: "ipfs.infura.io",
     port: 5001,
     protocol: "https",
