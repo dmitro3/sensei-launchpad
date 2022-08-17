@@ -67,16 +67,6 @@ export default function CreateLaunchpad({
     tx: "",
   });
 
-  const client = await create({
-    host: "ipfs.infura.io",
-    port: 5001,
-    protocol: "https",
-    apiPath: "/api/v0",
-    headers: {
-      authorization: auth,
-    },
-  });
-
   const checkFields = () => {
     setErrors([]);
     const {
@@ -111,6 +101,15 @@ export default function CreateLaunchpad({
   };
 
   const uploadInfo = async () => {
+    const client = await create({
+      host: "ipfs.infura.io",
+      port: 5001,
+      protocol: "https",
+      apiPath: "/api/v0",
+      headers: {
+        authorization: auth,
+      },
+    });
     let jsonObj = JSON.stringify(extraInfo);
 
     const added = await client.add(jsonObj);
