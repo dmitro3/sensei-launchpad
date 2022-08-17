@@ -512,8 +512,14 @@ export const launchpadDetails = async () => {
     let data = [];
 
     for (let i = 0; i < count; i++) {
-      let newData = await getLaunchpadInfo(i);
-      data.unshift(newData);
+      try {
+        let newData = await getLaunchpadInfo(i);
+        if (newData) {
+          data.unshift(newData);
+        }
+      } catch (error) {
+        console.log("can't fetch launchpad");
+      }
     }
 
     console.log(data, "data");
@@ -538,9 +544,12 @@ export const getUserContributions = async (userAddress) => {
 export const getLaunchpadInfo = async (id) => {
   try {
     let launchpadData = await deployerContract.getInfo(id);
+    let uri = `https://sensei.infura-ipfs.io/ipfs/${launchpadData._URIData
+      .split("/")
+      .at(-1)}`;
     let extraData;
     try {
-      let receipt = await axios.get(launchpadData._URIData);
+      let receipt = await axios.get(uri);
 
       extraData = receipt.data;
     } catch (error) {
