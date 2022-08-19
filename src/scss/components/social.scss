@@ -1,78 +1,77 @@
 /*-------- Social --------*/
 
 .social {
-    display: flex;
+  display: flex;
 
-    &__link {
-        display: block;
-    }
+  &__link {
+    display: block;
+  }
 
-    &__icon {
-        display: block;
-        width: 100%;
-        height: auto;
-        color: #fff;
-        transition: color 0.2s cubic-bezier(0.165, 0.84, 0.44, 1);
-    }
+  &__icon {
+    display: block;
+    width: 100%;
+    height: auto;
+    color: #fff !important;
+    transition: color 0.2s cubic-bezier(0.165, 0.84, 0.44, 1);
+  }
 
-    &__icon:hover {
-        color: $red;
-    }
+  img {
+    filter: invert(1);
+  }
+
+  &__icon:hover {
+    color: $red;
+  }
 }
 
 .social {
-
-    &--sidebar &__item:not(:first-child) {
-        margin-left: 15px;
-        padding-left: 15px;
-        border-left: 1px solid #3d3d3d;
-    }
+  &--sidebar &__item:not(:first-child) {
+    margin-left: 15px;
+    padding-left: 15px;
+    border-left: 1px solid #3d3d3d;
+  }
 }
 
 .social {
+  &--details &__item:not(:first-child) {
+    margin-left: 12px;
+  }
 
-    &--details &__item:not(:first-child) {
-        margin-left: 12px;
-    }
+  &--details &__link {
+    width: 20px;
+  }
 
-    &--details &__link {
-        width: 20px;
-    }
+  &--details &__icon {
+    color: $mudy;
+  }
 
-    &--details &__icon {
-        color: $mudy;
-    }
-
-    &--details &__icon:hover {
-        color: $red;
-    }
+  &--details &__icon:hover {
+    color: $red;
+  }
 }
 
 .social {
+  &--card &__item:not(:first-child) {
+    margin-left: 8px;
+    padding-left: 8px;
+    border-left: 1px solid #3d3d3d;
+  }
 
-    &--card &__item:not(:first-child) {
-        margin-left: 8px;
-        padding-left: 8px;
-        border-left: 1px solid #3D3D3D;
-    }
-
-    &--card &__link {
-        width: 16px;
-        height: 16px;
-    }
+  &--card &__link {
+    width: 16px;
+    height: 16px;
+  }
 }
 
 @media (max-width: 1099px) and (min-width: 990px) {
-
-    .social {
-
-        &__link {
-            width: 16px;
-        }
-
-        &--sidebar &__item:not(:first-child) {
-            margin-left: 10px;
-            padding-left: 10px;
-        }
+  .social {
+    &__link {
+      width: 16px;
     }
+
+    &--sidebar &__item:not(:first-child) {
+      margin-left: 10px;
+      padding-left: 10px;
+    }
+  }
 }

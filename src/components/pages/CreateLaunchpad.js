@@ -110,6 +110,7 @@ export default function CreateLaunchpad({
         authorization: auth,
       },
     });
+    
     let jsonObj = JSON.stringify(extraInfo);
 
     const added = await client.add(jsonObj);
