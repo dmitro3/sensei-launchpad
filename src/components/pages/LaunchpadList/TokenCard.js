@@ -5,6 +5,12 @@ import Badge from "../../common/Badge";
 import More from "../../../Icons/More";
 import Telegram from "./../../../Icons/Telegram";
 import Twitter from "./../../../Icons/Twitter";
+import discord from "./../../../Icons/discord.png";
+import facebook from "./../../../Icons/facebook.webp";
+import github from "./../../../Icons/github.png";
+import instagram from "./../../../Icons/instagram.png";
+import reddit from "./../../../Icons/reddit.jpg";
+import Globe from "./../../../Icons/Globe";
 import { useState } from "react";
 import truncate from "../../../services/truncate";
 
@@ -178,24 +184,83 @@ export default function TokenCard({ item }) {
             <li className="card__item">
               <span>Social Media</span>
               <ul className="card__social social social--card">
-                <li className="social__item">
-                  <a
-                    target="_blank"
-                    href={item?.social?.tg}
-                    className="social__link"
-                  >
-                    <Telegram className="social__icon" />
-                  </a>
-                </li>
-                <li className="social__item">
-                  <a
-                    target="_blank"
-                    href={item?.social?.twitter}
-                    className="social__link"
-                  >
-                    <Twitter className="social__icon" />
-                  </a>
-                </li>
+                {item.website && (
+                  <li className="social__item">
+                    <a
+                      href={
+                        item.website.split(":")[0] == "https"
+                          ? item.website
+                          : `https://${item.website}`
+                      }
+                      target="_blank"
+                      className="social__link"
+                    >
+                      <Globe className="social__icon" />
+                    </a>
+                  </li>
+                )}
+
+                {item.social?.tg && (
+                  <li className="social__item">
+                    <a href={item.social?.tg} className="social__link">
+                      <Telegram className="social__icon" />
+                    </a>
+                  </li>
+                )}
+                {item.social?.twitter && (
+                  <li className="social__item">
+                    <a href={item.social?.twitter} className="social__link">
+                      <Twitter className="social__icon" />
+                    </a>
+                  </li>
+                )}
+                {item.social?.discord && (
+                  <li className="social__item">
+                    <a href={item.social?.discord} className="social__link">
+                      <img
+                        src={discord}
+                        alt="discord"
+                        className="social__icon"
+                      />
+                    </a>
+                  </li>
+                )}
+                {item.social?.facebook && (
+                  <li className="social__item">
+                    <a href={item.social?.facebook} className="social__link">
+                      <img
+                        src={facebook}
+                        alt="facebook"
+                        className="social__icon"
+                      />
+                    </a>
+                  </li>
+                )}
+                {item.social?.github && (
+                  <li className="social__item">
+                    <a href={item.social?.github} className="social__link">
+                      <img src={github} alt="github" className="social__icon" />
+                    </a>
+                  </li>
+                )}
+                {item.social?.instagram && (
+                  <li className="social__item">
+                    <a href={item.social?.instagram} className="social__link">
+                      <img
+                        src={instagram}
+                        alt="instagram"
+                        className="social__icon"
+                      />
+                    </a>
+                  </li>
+                )}
+                {item.social?.reddit && (
+                  <li className="social__item">
+                    <a href={item.social?.reddit} className="social__link">
+                      <img src={reddit} alt="reddit" className="social__icon" />
+                    </a>
+                  </li>
+                )}
               </ul>
             </li>
             <li className="card__item">

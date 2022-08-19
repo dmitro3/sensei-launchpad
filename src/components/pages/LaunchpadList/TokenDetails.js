@@ -14,6 +14,7 @@ import DSocial from "./../../../Icons/DSocial";
 import Twitter from "../../../Icons/Twitter";
 import Facebook from "./../../../Icons/Facebook";
 import Google from "./../../../Icons/Google";
+import Globe from "./../../../Icons/Globe";
 import ArrowFilled from "./../../../Icons/ArrowFilled";
 import useSmallScreen from "./../../../hooks/useSmallScreen";
 import truncate from "../../../services/truncate";
