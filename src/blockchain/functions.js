@@ -544,6 +544,18 @@ export const getUserContributions = async (userAddress) => {
 export const getLaunchpadInfo = async (id) => {
   try {
     let launchpadData = await deployerContract.getInfo(id);
+    let owner;
+    try {
+      let contractInstance = await new ethers.Contract(
+        launchpadData.contractAddress,
+        launchpadABI,
+        provider
+      );
+      owner = await contractInstance.owner();
+    } catch (error) {
+      console.log(error, "get owner");
+    }
+
     let uri = `https://sensei.infura-ipfs.io/ipfs/${launchpadData._URIData
       .split("/")
       .at(-1)}`;
@@ -620,6 +632,7 @@ export const getLaunchpadInfo = async (id) => {
         100 /
         10 ** 18,
       launchpadAddress: launchpadData.contractAddress,
+      owner,
       status: launchpadData._status,
       values: [],
       userContribution: 0,

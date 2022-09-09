@@ -123,6 +123,7 @@ export default function TokenDetails({
   const getInfo = async () => {
     let info = await getLaunchpadInfo(id);
     if (info) {
+      console.log(info, "info");
       setToken(info);
     }
   };
@@ -174,12 +175,10 @@ export default function TokenDetails({
         width={mobileScreen ? "130px" : "90px"}
         height={mobileScreen ? "45px" : "30px"}
         key={props.dataIndex}
-        style={{ display: chart[props.dataIndex].active ? "block" : "none" }}
-      >
+        style={{ display: chart[props.dataIndex].active ? "block" : "none" }}>
         <div
           className="chart__graph-label"
-          style={{ color: chart[props.dataIndex].color }}
-        >
+          style={{ color: chart[props.dataIndex].color }}>
           <span>
             {chart[props.dataIndex].title +
               " — " +
@@ -325,8 +324,7 @@ export default function TokenDetails({
               <span className="details__item-text">Listing On</span>
               <a
                 href="/"
-                className="details__item-text details__item-text--value details__item-text--underline"
-              >
+                className="details__item-text details__item-text--value details__item-text--underline">
                 Pancakeswap
               </a>
             </li>
@@ -381,8 +379,7 @@ export default function TokenDetails({
               <div className="progress__bar">
                 <div
                   className="progress__track"
-                  style={{ width: `${token.progress}%` }}
-                ></div>
+                  style={{ width: `${token.progress}%` }}></div>
               </div>
               <div className="progress__row">
                 <span className="progress__text">
@@ -393,18 +390,17 @@ export default function TokenDetails({
                 </span>
               </div>
             </div>
-            {token.admin.toLowerCase() === userAddress.toLowerCase() ? (
+            {token?.admin?.toLowerCase() === userAddress?.toLowerCase() ? (
               <>
                 <h6>Admin Zone</h6>
                 <button
-                  disabled={token.status !== 0 || token.cancelled || isLoading}
+                  disabled={token.status <= 2 || token.cancelled || isLoading}
                   onClick={
                     !userAddress
                       ? () => setPopupShow(true)
                       : () => handleFinish("CANCEL")
                   }
-                  className="button button--red details__button"
-                >
+                  className="button button--red details__button">
                   Cancel Sale
                 </button>
                 <button
@@ -416,12 +412,11 @@ export default function TokenDetails({
                       ? () => setPopupShow(true)
                       : () => handleFinish("FINISH")
                   }
-                  className="button button--red details__button"
-                >
+                  className="button button--red details__button">
                   Finish Sale
                 </button>
               </>
-            ) : token.cancelled || token.status === 1 ? (
+            ) : token.cancelled || token.status >= 2 ? (
               <>
                 <p className="input-wrapper__text">
                   Balance: {(userBalance / 10 ** 18).toFixed(4)} BNB
@@ -433,8 +428,7 @@ export default function TokenDetails({
                       ? () => setPopupShow(true)
                       : () => handleFinish("CLAIM")
                   }
-                  className="button button--red details__button"
-                >
+                  className="button button--red details__button">
                   Claim
                 </button>
               </>
@@ -460,8 +454,7 @@ export default function TokenDetails({
                 <button
                   disabled={token.endDate < Date.now() || isLoading}
                   onClick={!userAddress ? () => setPopupShow(true) : handleBuy}
-                  className="button button--red details__button"
-                >
+                  className="button button--red details__button">
                   Buy
                 </button>
               </>
@@ -530,8 +523,7 @@ export default function TokenDetails({
                     className={"chart__label" + (item.active ? " active" : "")}
                     key={index}
                     style={{ color: item.color }}
-                    onMouseOver={() => handleChartArray(index)}
-                  >
+                    onMouseOver={() => handleChartArray(index)}>
                     <span className="chart__label-title">{item.title}</span>
                   </li>
                 );
@@ -539,47 +531,48 @@ export default function TokenDetails({
             </ul>
           </div>
         </div>
-        <div className="details__wrapper">
-          <div className="chart">
-            <h5 className="chart__title">Approve Launchpad</h5>
-            <br />
-            <div className="input-wrapper__row">
-              <input
-                type="number"
-                className="input-wrapper__input"
-                value={smartScore}
-                onChange={(e) =>
-                  setSmartScore(
-                    e.target.value > 100
-                      ? 100
-                      : e.target.value < 0
-                      ? 0
-                      : e.target.value
-                  )
-                }
-                placeholder="Smart Score"
-              />
-            </div>
-            <br />
-            <h5 className="chart__title">KYC</h5>
-            <br />
-            <label className="switch">
-              <input
-                type="checkbox"
-                checked={KYC}
-                onChange={(e) => setKYC(e.target.checked)}
-              />
-              <span className="slider round"></span>
-            </label>
+        {token?.owner?.toLowerCase() === userAddress?.toLowerCase() && (
+          <div className="details__wrapper">
+            <div className="chart">
+              <h5 className="chart__title">Approve Launchpad</h5>
+              <br />
+              <div className="input-wrapper__row">
+                <input
+                  type="number"
+                  className="input-wrapper__input"
+                  value={smartScore}
+                  onChange={(e) =>
+                    setSmartScore(
+                      e.target.value > 100
+                        ? 100
+                        : e.target.value < 0
+                        ? 0
+                        : e.target.value
+                    )
+                  }
+                  placeholder="Smart Score"
+                />
+              </div>
+              <br />
+              <h5 className="chart__title">KYC</h5>
+              <br />
+              <label className="switch">
+                <input
+                  type="checkbox"
+                  checked={KYC}
+                  onChange={(e) => setKYC(e.target.checked)}
+                />
+                <span className="slider round"></span>
+              </label>
 
-            <button
-              onClick={handleInit}
-              className="button button--red details__button"
-            >
-              Approve
-            </button>
+              <button
+                onClick={handleInit}
+                className="button button--red details__button">
+                Approve
+              </button>
+            </div>
           </div>
-        </div>
+        )}
       </div>
       <div className="comments details__comments">
         <div className="details__wrapper">
