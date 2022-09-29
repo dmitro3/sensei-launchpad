@@ -14,7 +14,7 @@ import DateTimePicker from "react-datetime-picker";
 import {
   getAllContributors,
   getAirdropInfo,
-  setUserAllocation,
+  addUserAllocation,
   setVesting,
   getTokenBalance,
   startAirdrop,
@@ -110,7 +110,7 @@ export default function AirdropDetails({
 
   const handleAllocations = async (addresses, allocations) => {
     setIsLoading(true);
-    let receipt = await setUserAllocation(
+    let receipt = await addUserAllocation(
       addresses,
       allocations,
       airdrop.airdropAddress,
@@ -328,8 +328,7 @@ export default function AirdropDetails({
               <div className="progress__bar">
                 <div
                   className="progress__track"
-                  style={{ width: `${airdrop.progress}%` }}
-                ></div>
+                  style={{ width: `${airdrop.progress}%` }}></div>
               </div>
               <div className="progress__row">
                 <span className="progress__text">
@@ -363,8 +362,7 @@ export default function AirdropDetails({
             <button
               disabled={isLoading}
               onClick={handleClaim}
-              className="button button--red details__button"
-            >
+              className="button button--red details__button">
               Claim
             </button>
           </div>
@@ -418,8 +416,7 @@ export default function AirdropDetails({
                   <button
                     disabled={isLoading}
                     onClick={() => setPopupShow(true)}
-                    className="button button--red details__button"
-                  >
+                    className="button button--red details__button">
                     Add Allocation
                   </button>
                 </li>
@@ -427,8 +424,7 @@ export default function AirdropDetails({
                   <button
                     disabled={isLoading}
                     onClick={() => setVestingPopupShow(true)}
-                    className="button button--red details__button"
-                  >
+                    className="button button--red details__button">
                     Set Vesting
                   </button>
                 </li>
@@ -436,8 +432,7 @@ export default function AirdropDetails({
                   <button
                     disabled={isLoading}
                     onClick={() => setStartPopupShow(true)}
-                    className="button button--red details__button"
-                  >
+                    className="button button--red details__button">
                     Start Airdrop
                   </button>
                 </li>
@@ -445,8 +440,7 @@ export default function AirdropDetails({
                   <button
                     disabled={isLoading}
                     onClick={handleCancel}
-                    className="button button--red details__button"
-                  >
+                    className="button button--red details__button">
                     Cancel Airdrop
                   </button>
                 </li>
@@ -458,8 +452,7 @@ export default function AirdropDetails({
       <Popup
         popupShow={popupShow}
         setPopupShow={setPopupShow}
-        className="popup--connect"
-      >
+        className="popup--connect">
         <h1>Set Allocations</h1>
 
         <ReadString
@@ -471,8 +464,7 @@ export default function AirdropDetails({
       <Popup
         popupShow={vestingPopupShow}
         setPopupShow={setVestingPopupShow}
-        className="popup--connect"
-      >
+        className="popup--connect">
         <h1>Set Vesting</h1>
         <div className="popup--allocation-box">
           <Input
@@ -520,8 +512,7 @@ export default function AirdropDetails({
           <button
             disabled={isLoading}
             onClick={() => handleVesting()}
-            className="button button--red details__button"
-          >
+            className="button button--red details__button">
             Set Vesting
           </button>
         </div>
@@ -529,21 +520,18 @@ export default function AirdropDetails({
       <Popup
         popupShow={startPopupShow}
         setPopupShow={setStartPopupShow}
-        className="popup--connect"
-      >
+        className="popup--connect">
         <h1>Setting time to start</h1>
         <div className="popup--allocation-box">
           <div style={{ width: "100%" }} className="items__buttons">
             <button
               className={"items__button" + (currentTab === 0 ? " active" : "")}
-              onClick={() => setCurrentTab(0)}
-            >
+              onClick={() => setCurrentTab(0)}>
               Start Now
             </button>
             <button
               className={"items__button" + (currentTab === 1 ? " active" : "")}
-              onClick={() => setCurrentTab(1)}
-            >
+              onClick={() => setCurrentTab(1)}>
               Start with specific time
             </button>
           </div>
@@ -575,8 +563,7 @@ export default function AirdropDetails({
           <button
             disabled={isLoading}
             onClick={isAllowed ? handleStart : handleApprove}
-            className="button button--red details__button"
-          >
+            className="button button--red details__button">
             {isAllowed ? "Start Airdrop" : "Approve Token"}
           </button>
         </div>

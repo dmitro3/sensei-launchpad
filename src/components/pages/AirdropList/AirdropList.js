@@ -21,6 +21,7 @@ export default function AirdropList({
   const getUserCreated = async () => {
     if (userAddress && airdrops) {
       let temp = [];
+      console.log(airdrops, "airdrops");
       airdrops.map((el) => {
         if (el.admin.toLowerCase() === userAddress.toLowerCase()) {
           temp.push(el);
@@ -60,8 +61,7 @@ export default function AirdropList({
             className={
               "catalog__tabs-button" + (activeTab === 0 ? " active" : "")
             }
-            onClick={() => setActiveTab(0)}
-          >
+            onClick={() => setActiveTab(0)}>
             All Airdrops
           </button>
         </li>
@@ -70,8 +70,7 @@ export default function AirdropList({
             className={
               "catalog__tabs-button" + (activeTab === 1 ? " active" : "")
             }
-            onClick={() => setActiveTab(1)}
-          >
+            onClick={() => setActiveTab(1)}>
             My Airdrops
           </button>
         </li>
@@ -80,8 +79,7 @@ export default function AirdropList({
             className={
               "catalog__tabs-button" + (activeTab === 2 ? " active" : "")
             }
-            onClick={() => setActiveTab(2)}
-          >
+            onClick={() => setActiveTab(2)}>
             Created by you
           </button>
         </li>
@@ -93,24 +91,24 @@ export default function AirdropList({
       )}
       <ul className="cards-list cards-list--catalog">
         {activeTab === 0
-          ? airdrops.map((item) => {
+          ? airdrops?.map((item) => {
               return (
-                <li className="cards-list__item" key={item.id}>
+                <li className="cards-list__item" key={item?.id}>
                   <AirdropCard item={item} />
                 </li>
               );
             })
           : activeTab === 1
-          ? userAirdrops.map((item) => {
+          ? userAirdrops?.map((item) => {
               return (
-                <li className="cards-list__item" key={item.id}>
+                <li className="cards-list__item" key={item?.id}>
                   <AirdropCard item={item} />
                 </li>
               );
             })
-          : userCreated.map((item) => {
+          : userCreated?.map((item) => {
               return (
-                <li className="cards-list__item" key={item.id}>
+                <li className="cards-list__item" key={item?.id}>
                   <AirdropCard item={item} />
                 </li>
               );

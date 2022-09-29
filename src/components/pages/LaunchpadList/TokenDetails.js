@@ -18,13 +18,18 @@ import Globe from "./../../../Icons/Globe";
 import ArrowFilled from "./../../../Icons/ArrowFilled";
 import useSmallScreen from "./../../../hooks/useSmallScreen";
 import truncate from "../../../services/truncate";
+import Paginate from "../../common/Paginate";
+import Popup from "../../common/Popup";
 import {
   buy,
   getLaunchpadInfo,
   finishSale,
   getUserContributions,
   initSale,
+  addToWhitelist,
+  getLaunchpadWhitelisted,
 } from "../../../blockchain/functions";
+import ReadAddress from "../../common/readAddress";
 import NumberFormat from "react-number-format";
 
 const sortArray = [
@@ -48,12 +53,50 @@ export default function TokenDetails({
   );
   const [smartScore, setSmartScore] = useState("");
   const [KYC, setKYC] = useState(false);
+  const [audit, setAudit] = useState(false);
   const [value, setValue] = useState("");
   const [comment, setComment] = useState("");
   const [chart, setChart] = useState([]);
   const smallScreen = useSmallScreen(1220);
   const mobileScreen = useSmallScreen(480);
+  const [allocations, setAllocations] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [popupWhitelistShow, setPopupWhitelistShow] = useState(false);
+
+  const isWhitelisted = () => {
+    if (token?.privateSale) {
+      return allocations.some(
+        (el) => el.toLowerCase() === userAddress.toLowerCase()
+      );
+    }
+    return true;
+  };
+
+  const handleWhitelisted = async (addresses) => {
+    setIsLoading(true);
+    let receipt = await addToWhitelist(
+      addresses,
+      token.launchpadAddress,
+      walletType,
+      walletProvider
+    );
+    setPopupWhitelistShow(false);
+
+    if (receipt) {
+      console.log(receipt);
+      getContributors();
+    }
+    setIsLoading(false);
+  };
+
+  const getContributors = async () => {
+    if (token.launchpadAddress && token.privateSale) {
+      let contributors = await getLaunchpadWhitelisted(token.launchpadAddress);
+      if (contributors) {
+        setAllocations(contributors);
+      }
+    }
+  };
 
   const handleBuy = async () => {
     setIsLoading(true);
@@ -87,6 +130,7 @@ export default function TokenDetails({
     let receipt = await initSale(
       smartScore,
       KYC,
+      audit,
       token.launchpadAddress,
       walletType,
       walletProvider
@@ -142,6 +186,7 @@ export default function TokenDetails({
 
   useEffect(() => {
     setChart(token.values);
+    getContributors();
   }, [token]);
 
   const countdownRenderer = ({ formatted }) => {
@@ -427,6 +472,14 @@ export default function TokenDetails({
                       className="button button--red details__button">
                       Finish Sale
                     </button>
+                    <button
+                      disabled={
+                        !token?.privateSale || token?.cancelled || isLoading
+                      }
+                      onClick={() => setPopupWhitelistShow(true)}
+                      className="button button--red details__button">
+                      Add to Whitelist
+                    </button>
                   </>
                 ) : token?.cancelled || token?.status >= 2 ? (
                   <>
@@ -464,7 +517,11 @@ export default function TokenDetails({
                       onChange={(e) => setValue(e)}
                     />
                     <button
-                      disabled={token?.endDate < Date.now() || isLoading}
+                      disabled={
+                        token?.endDate < Date.now() ||
+                        isLoading ||
+                        !isWhitelisted()
+                      }
                       onClick={
                         !userAddress ? () => setPopupShow(true) : handleBuy
                       }
@@ -547,49 +604,87 @@ export default function TokenDetails({
                 </ul>
               </div>
             </div>
-            {/* {token?.owner?.toLowerCase() === userAddress?.toLowerCase() && ( */}
-            <div className="details__wrapper">
-              <div className="chart">
-                <h5 className="chart__title">Approve Launchpad</h5>
-                <br />
-                <div className="input-wrapper__row">
-                  <input
-                    type="number"
-                    className="input-wrapper__input"
-                    value={smartScore}
-                    onChange={(e) =>
-                      setSmartScore(
-                        e.target.value > 100
-                          ? 100
-                          : e.target.value < 0
-                          ? 0
-                          : e.target.value
-                      )
-                    }
-                    placeholder="Smart Score"
-                  />
-                </div>
-                <br />
-                <h5 className="chart__title">KYC</h5>
-                <br />
-                <label className="switch">
-                  <input
-                    type="checkbox"
-                    checked={KYC}
-                    onChange={(e) => setKYC(e.target.checked)}
-                  />
-                  <span className="slider round"></span>
-                </label>
+            {token?.owner?.toLowerCase() === userAddress?.toLowerCase() && (
+              <div className="details__wrapper">
+                <div className="chart">
+                  <h5 className="chart__title">Approve Launchpad</h5>
+                  <br />
+                  <div className="input-wrapper__row">
+                    <input
+                      type="number"
+                      className="input-wrapper__input"
+                      value={smartScore}
+                      onChange={(e) =>
+                        setSmartScore(
+                          e.target.value > 100
+                            ? 100
+                            : e.target.value < 0
+                            ? 0
+                            : e.target.value
+                        )
+                      }
+                      placeholder="Smart Score"
+                    />
+                  </div>
+                  <br />
+                  <h5 className="chart__title">KYC</h5>
+                  <br />
+                  <label className="switch">
+                    <input
+                      type="checkbox"
+                      checked={KYC}
+                      onChange={(e) => setKYC(e.target.checked)}
+                    />
+                    <span className="slider round"></span>
+                  </label>
+                  <br />
+                  <br />
+                  <h5 className="chart__title">Audit</h5>
+                  <br />
+                  <label className="switch">
+                    <input
+                      type="checkbox"
+                      checked={audit}
+                      onChange={(e) => setAudit(e.target.checked)}
+                    />
+                    <span className="slider round"></span>
+                  </label>
 
-                <button
-                  onClick={handleInit}
-                  className="button button--red details__button">
-                  Approve
-                </button>
+                  <button
+                    onClick={handleInit}
+                    className="button button--red details__button">
+                    Approve
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+          {token?.privateSale && (
+            <div className="comments details__comments">
+              <div className="details__wrapper">
+                <h1 className="details__title">
+                  Whitelisted addresses <span>({allocations.length})</span>
+                </h1>
+                <Paginate list={allocations}>
+                  {(currentItems) => {
+                    return (
+                      <ul className="details__list details__list--allocations details__list--main">
+                        {currentItems.map((item, index) => {
+                          return (
+                            <li className="details__item" key={index}>
+                              <button className="details__item-text details__item-text--value details__item-text--copy details__item-text--copy--2">
+                                {smallScreen ? truncate(item, 20) : item}
+                              </button>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    );
+                  }}
+                </Paginate>
               </div>
             </div>
-            {/* )} */}
-          </div>
+          )}
           <div className="comments details__comments">
             <div className="details__wrapper">
               <div className="comments__top">
@@ -679,6 +774,18 @@ export default function TokenDetails({
       ) : (
         <h1>Loading...</h1>
       )}
+
+      <Popup
+        popupShow={popupWhitelistShow}
+        setPopupShow={setPopupWhitelistShow}
+        className="popup--connect">
+        <h1>Set Whitelist</h1>
+
+        <ReadAddress
+          isLoading={isLoading}
+          handleWhitelisted={handleWhitelisted}
+        />
+      </Popup>
     </div>
   );
 }

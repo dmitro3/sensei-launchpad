@@ -2,13 +2,19 @@ import React, { useState, useEffect } from "react";
 import AddTokenAddress from "../common/AddTokenAddress";
 import ExtraInfo from "../../components/pages/CreateLaunchpad3";
 import { useMoralisWeb3Api } from "react-moralis";
-import { create } from "ipfs-http-client";
 import {
   checkAllowance,
   approveDeployer,
   createLaunchpad,
   createAirdrop,
 } from "../../blockchain/functions";
+import { create } from "ipfs-http-client";
+
+const projectId = "1xqn5K7B9K3GiKPouHjJQafymbR";
+const projectSecret = "001788eac00191371f6aababea7d08cf";
+
+const auth =
+  "Basic " + Buffer.from(projectId + ":" + projectSecret).toString("base64");
 
 export default function CreateAirdrop({
   userAddress,
@@ -16,7 +22,6 @@ export default function CreateAirdrop({
   walletType,
   walletProvider,
 }) {
-  const client = create("https://ipfs.infura.io:5001/api/v0");
   const Web3Api = useMoralisWeb3Api();
   const [isLoading, setIsLoading] = useState(false);
   const [step, setStep] = useState(1);
@@ -44,6 +49,16 @@ export default function CreateAirdrop({
   });
 
   const uploadInfo = async () => {
+    const client = await create({
+      host: "ipfs.infura.io",
+      port: 5001,
+      protocol: "https",
+      apiPath: "/api/v0",
+      headers: {
+        authorization: auth,
+      },
+    });
+
     let jsonObj = JSON.stringify(extraInfo);
 
     const added = await client.add(jsonObj);
@@ -174,8 +189,7 @@ export default function CreateAirdrop({
           disabled={step === 1 || isLoading}
           onClick={() => setStep(step - 1)}
           type="submit"
-          className="button button--red form__submit"
-        >
+          className="button button--red form__submit">
           Prev
         </button>
         <button
@@ -192,8 +206,7 @@ export default function CreateAirdrop({
               : () => setStep(step + 1)
           }
           type="submit"
-          className="button button--red form__submit"
-        >
+          className="button button--red form__submit">
           {step === 1
             ? launchDetails.isAllowed
               ? "Next"

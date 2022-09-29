@@ -1,5 +1,43 @@
 export const deployerABI = [
   {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
+        internalType: "address",
+        name: "previousOwner",
+        type: "address",
+      },
+      {
+        indexed: true,
+        internalType: "address",
+        name: "newOwner",
+        type: "address",
+      },
+    ],
+    name: "OwnershipTransferred",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: false,
+        internalType: "address",
+        name: "newTokenAddress",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "address",
+        name: "deployer",
+        type: "address",
+      },
+    ],
+    name: "launchpadDeployed",
+    type: "event",
+  },
+  {
     inputs: [
       {
         internalType: "address",
@@ -81,113 +119,6 @@ export const deployerABI = [
     name: "createLaunchpad",
     outputs: [],
     stateMutability: "payable",
-    type: "function",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: true,
-        internalType: "address",
-        name: "previousOwner",
-        type: "address",
-      },
-      {
-        indexed: true,
-        internalType: "address",
-        name: "newOwner",
-        type: "address",
-      },
-    ],
-    name: "OwnershipTransferred",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
-        indexed: false,
-        internalType: "address",
-        name: "newTokenAddress",
-        type: "address",
-      },
-      {
-        indexed: false,
-        internalType: "address",
-        name: "deployer",
-        type: "address",
-      },
-    ],
-    name: "launchpadDeployed",
-    type: "event",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "_token",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "_launchpad",
-        type: "address",
-      },
-    ],
-    name: "removeLaunchpad",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [],
-    name: "renounceOwnership",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "_price",
-        type: "uint256",
-      },
-    ],
-    name: "setPrice",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "address",
-        name: "newOwner",
-        type: "address",
-      },
-    ],
-    name: "transferOwnership",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "_invested",
-        type: "uint256",
-      },
-      {
-        internalType: "uint256",
-        name: "_contributors",
-        type: "uint256",
-      },
-    ],
-    name: "updateStats",
-    outputs: [],
-    stateMutability: "nonpayable",
     type: "function",
   },
   {
@@ -422,6 +353,31 @@ export const deployerABI = [
     type: "function",
   },
   {
+    inputs: [
+      {
+        internalType: "address",
+        name: "_token",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "_launchpad",
+        type: "address",
+      },
+    ],
+    name: "removeLaunchpad",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "renounceOwnership",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
     inputs: [],
     name: "senseiLocker",
     outputs: [
@@ -432,6 +388,19 @@ export const deployerABI = [
       },
     ],
     stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "_price",
+        type: "uint256",
+      },
+    ],
+    name: "setPrice",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
   {
@@ -458,6 +427,37 @@ export const deployerABI = [
       },
     ],
     stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "address",
+        name: "newOwner",
+        type: "address",
+      },
+    ],
+    name: "transferOwnership",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "_invested",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "_contributors",
+        type: "uint256",
+      },
+    ],
+    name: "updateStats",
+    outputs: [],
+    stateMutability: "nonpayable",
     type: "function",
   },
   {
@@ -730,6 +730,32 @@ export const launchpadABI = [
     type: "function",
   },
   {
+    inputs: [
+      {
+        internalType: "address[]",
+        name: "users",
+        type: "address[]",
+      },
+    ],
+    name: "addToWhitelist",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "audit",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
     inputs: [],
     name: "buy",
     outputs: [],
@@ -752,6 +778,19 @@ export const launchpadABI = [
       },
     ],
     name: "changeData",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bool",
+        name: "_status",
+        type: "bool",
+      },
+    ],
+    name: "changeWhitelistStatus",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
@@ -894,6 +933,19 @@ export const launchpadABI = [
   },
   {
     inputs: [],
+    name: "getWhitelisted",
+    outputs: [
+      {
+        internalType: "address[]",
+        name: "users",
+        type: "address[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
     name: "hardCap",
     outputs: [
       {
@@ -915,6 +967,11 @@ export const launchpadABI = [
       {
         internalType: "bool",
         name: "_kyc",
+        type: "bool",
+      },
+      {
+        internalType: "bool",
+        name: "_audit",
         type: "bool",
       },
     ],
@@ -1223,6 +1280,25 @@ export const launchpadABI = [
     type: "function",
   },
   {
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    name: "whitelist",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
     inputs: [],
     name: "whitelistActive",
     outputs: [
@@ -1230,6 +1306,19 @@ export const launchpadABI = [
         internalType: "bool",
         name: "",
         type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "whitelistCount",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
       },
     ],
     stateMutability: "view",

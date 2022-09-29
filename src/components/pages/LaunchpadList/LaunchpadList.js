@@ -44,16 +44,14 @@ export default function LaunchpadList({
         <li className="catalog__tabs-item">
           <button
             className={"catalog__tabs-button" + (page === 0 ? " active" : "")}
-            onClick={() => setPage(0)}
-          >
+            onClick={() => setPage(0)}>
             All Launchpads
           </button>
         </li>
         <li className="catalog__tabs-item">
           <button
             className={"catalog__tabs-button" + (page === 1 ? " active" : "")}
-            onClick={() => setPage(1)}
-          >
+            onClick={() => setPage(1)}>
             My Contributions
           </button>
         </li>
@@ -84,8 +82,8 @@ export default function LaunchpadList({
       )}
       <ul className="cards-list cards-list--catalog">
         {page === 0 &&
-          tokens.length > 0 &&
-          tokens.map((item, index) => {
+          tokens?.length > 0 &&
+          tokens?.map((item, index) => {
             return (
               <li className="cards-list__item" key={index}>
                 <TokenCard item={item} />
@@ -93,7 +91,7 @@ export default function LaunchpadList({
             );
           })}
         {page === 1 &&
-          userTokens.map((item, index) => {
+          userTokens?.map((item, index) => {
             return (
               <li className="cards-list__item" key={index}>
                 <TokenCard item={item} />

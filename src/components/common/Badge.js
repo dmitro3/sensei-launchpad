@@ -3,28 +3,27 @@ export default function Badge({ item, className }) {
     <div
       className={
         "badge " +
-        (item.status === 0
+        (item?.status === 0
           ? "upcoming"
-          : item.cancelled
+          : item?.cancelled
           ? "cancelled "
-          : item.status === 2
+          : item?.status === 2
           ? "claiming"
-          : item.startDate < Date.now()
-          ? item.endDate < Date.now()
+          : item?.startDate < Date.now()
+          ? item?.endDate < Date.now()
             ? "finished"
             : "live "
           : "upcoming ") +
         (className ? className : "")
-      }
-    >
-      {item.status === 0
-        ? "Revision"
-        : item.cancelled
+      }>
+      {item?.status === 0
+        ? "Upcoming"
+        : item?.cancelled
         ? "Cancelled"
-        : item.status === 2
+        : item?.status === 2
         ? "Claiming"
-        : item.startDate < Date.now()
-        ? item.endDate < Date.now()
+        : item?.startDate < Date.now()
+        ? item?.endDate < Date.now()
           ? "Sale Ended"
           : "Sale Live"
         : "Upcoming"}

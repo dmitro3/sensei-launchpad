@@ -24,7 +24,7 @@ let provider = new ethers.providers.JsonRpcProvider(
   "https://data-seed-prebsc-2-s2.binance.org:8545/"
 );
 
-let deployerAddress = "0xE13f7ec124992b86aEBB422Aa15b8C96A246A9E1";
+let deployerAddress = "0xF60e55B41092d48607365Aec1e796dCA04d96f5e";
 let lockerAddress = "0x2B8ED5db3a930AC0200f3e58E45E5FAf2c91478D";
 let airdropDeployer = "0x21ce15EF3C4752D2C656595a1B8156892364171F";
 
@@ -60,7 +60,7 @@ export const getUserAirdrops = async (userAddress) => {
   }
 };
 
-export const setUserAllocation = async (
+export const addUserAllocation = async (
   _addresses,
   _allocations,
   _contractAddress,
@@ -77,6 +77,34 @@ export const setUserAllocation = async (
     );
 
     let tx = await instance.setUserAllocation(_addresses, _allocations);
+
+    let receipt = await tx.wait();
+
+    return receipt;
+  } catch (error) {
+    console.log(error, "handleAllocations");
+    if (error.data) {
+      window.alert(error.data.message);
+    }
+  }
+};
+
+export const addToWhitelist = async (
+  _addresses,
+  _contractAddress,
+  walletType,
+  walletProvider
+) => {
+  try {
+    console.log(_addresses, "addresses");
+    let signer = await getSigner(walletType, walletProvider);
+    let instance = await new ethers.Contract(
+      _contractAddress,
+      launchpadABI,
+      signer
+    );
+
+    let tx = await instance.addToWhitelist(_addresses);
 
     let receipt = await tx.wait();
 
@@ -212,6 +240,19 @@ export const getAllContributors = async (_address) => {
     return data;
   } catch (error) {
     console.log(error, "getAllContributors");
+  }
+};
+
+export const getLaunchpadWhitelisted = async (_address) => {
+  try {
+    let instance = await new ethers.Contract(_address, launchpadABI, provider);
+
+    let data = await instance.getWhitelisted();
+
+    console.log(data, "getWhitelisted");
+    return data;
+  } catch (error) {
+    console.log(error, "getWhitelisted");
   }
 };
 
@@ -544,6 +585,7 @@ export const getUserContributions = async (userAddress) => {
 export const getLaunchpadInfo = async (id) => {
   try {
     let launchpadData = await deployerContract.getInfo(id);
+    console.log(launchpadData, "raw launchpadData");
     let owner;
     try {
       let contractInstance = await new ethers.Contract(
@@ -575,7 +617,7 @@ export const getLaunchpadInfo = async (id) => {
       image: extraData.logo ? extraData.logo : senseiLogo,
       desc: extraData.description,
       likes: Number(launchpadData.data[11]),
-      audited: extraData.audited ? extraData.audited : false,
+      audited: launchpadData.booleans[3],
       verified: launchpadData.booleans[0],
       bnbPrice: launchpadData.data[0] / 10000,
       cap: [Number(launchpadData.data[2]), Number(launchpadData.data[3])],
@@ -589,7 +631,7 @@ export const getLaunchpadInfo = async (id) => {
       category: extraData.category.title,
       score: Number(launchpadData._score),
       kyc: launchpadData.booleans[0],
-      audit: extraData.audited ? extraData.audited : false,
+      audit: launchpadData.booleans[3],
       size: "",
       locked: "",
       lockPeriod: "",
@@ -690,6 +732,7 @@ const getScore = (score) => {
 export const initSale = async (
   _score,
   _kyc,
+  _audit,
   launchAddress,
   walletType,
   walletProvider
@@ -703,7 +746,7 @@ export const initSale = async (
 
     let score = Number(_score).toString();
 
-    let tx = await contractInstance.initSale(score, _kyc);
+    let tx = await contractInstance.initSale(score, _kyc, _audit);
 
     let receipt = await tx.wait();
 

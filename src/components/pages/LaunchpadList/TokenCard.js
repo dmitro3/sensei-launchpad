@@ -26,8 +26,7 @@ export default function TokenCard({ item }) {
       <div className="card__row card__row--footer">
         <Link
           to={`/launchpad_list/${item.id}/${item.address}`}
-          className="card__button button"
-        >
+          className="card__button button">
           View Details
         </Link>
         {!item.cancelled && item.status !== 0 && (
@@ -59,8 +58,7 @@ export default function TokenCard({ item }) {
         (flipped ? " flipped" : "") +
         " card--" +
         item?.level
-      }
-    >
+      }>
       <div className="card__wrapper">
         <div className="card__face card__face--front">
           <div className="card__row">
@@ -75,17 +73,24 @@ export default function TokenCard({ item }) {
               <span className="card__features-text">{item?.likes}</span>
             </li>
             <li
+              // className={
+              //   "card__features-item card__features-item--audit" +
+              //   (item?.audited ? " active" : "")
+              // }
               className={
                 "card__features-item card__features-item--audit" +
                 (item?.audited ? " active" : "")
-              }
-            ></li>
+              }>
+              {" "}
+              Audit
+            </li>
             <li
               className={
                 "card__features-item card__features-item--verify" +
                 (item?.verified ? " active" : "")
-              }
-            ></li>
+              }>
+              KYC
+            </li>
           </ul>
           <h1 className="card__title">{item?.name}</h1>
           <div className="card__price">
@@ -114,8 +119,7 @@ export default function TokenCard({ item }) {
             <div className="progress__bar">
               <span
                 className="progress__track"
-                style={{ width: item?.progress + "%" }}
-              ></span>
+                style={{ width: item?.progress + "%" }}></span>
             </div>
             <div className="progress__row">
               <span className="progress__text">0 BNB</span>
@@ -153,7 +157,7 @@ export default function TokenCard({ item }) {
           <ul className="card__list">
             <li className="card__item">
               <span>KYC/DOXXED</span>
-              <span>{`${item?.kyc}`}</span>
+              <span>{item?.kyc ? "Yes" : "No"}</span>
             </li>
             <li className="card__item">
               <span>Team Wallet Size</span>
@@ -173,7 +177,7 @@ export default function TokenCard({ item }) {
             </li>
             <li className="card__item">
               <span>Audit</span>
-              <span>{`${item?.audit}`}</span>
+              <span>{item?.audit ? "Yes" : "No"}</span>
             </li>
             <li className="card__item">
               <span>Website</span>
@@ -193,8 +197,7 @@ export default function TokenCard({ item }) {
                           : `https://${item.website}`
                       }
                       target="_blank"
-                      className="social__link"
-                    >
+                      className="social__link">
                       <Globe className="social__icon" />
                     </a>
                   </li>
@@ -269,7 +272,7 @@ export default function TokenCard({ item }) {
             </li>
             <li className="card__item">
               <span>Private Sale</span>
-              <span>{`${item?.privateSale}`}</span>
+              <span>{item?.privateSale ? "Yes" : "No"}</span>
             </li>
             {/* <li className="card__item">
               <span>Vesting</span>

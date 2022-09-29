@@ -96,8 +96,7 @@ export default function Sidebar({
           </Link>
           <button
             className="sidebar__button sidebar__button--wallet"
-            onClick={userAddress ? disconnectWallet : () => setPopupShow(true)}
-          >
+            onClick={userAddress ? disconnectWallet : () => setPopupShow(true)}>
             <Wallet className="sidebar__button-icon" />
             <span>
               {userAddress
@@ -107,8 +106,7 @@ export default function Sidebar({
           </button>
           <button
             className="sidebar__button sidebar__button--net"
-            onClick={() => setNetworkPopupShow(true)}
-          >
+            onClick={() => setNetworkPopupShow(true)}>
             <img src={bscIcon} alt="BSC" className="sidebar__button-icon" />
             <span>BSC Mainnet</span>
           </button>
@@ -123,8 +121,7 @@ export default function Sidebar({
                     "sidebar__menu-button" +
                     (checkUrl(item.to) ? " active" : "")
                   }
-                  onClick={() => setContentHeight(menu.map((item) => 0))}
-                >
+                  onClick={() => setContentHeight(menu.map((item) => 0))}>
                   <item.icon className="sidebar__menu-icon" />
                   <span>{item.title}</span>
                 </Link>
@@ -137,8 +134,7 @@ export default function Sidebar({
                     "sidebar__menu-button" +
                     (contentHeight[index] > 0 ? " active" : "")
                   }
-                  onClick={() => toggleContent(index)}
-                >
+                  onClick={() => toggleContent(index)}>
                   <item.icon className="sidebar__menu-icon" />
                   <span>{item.title}</span>
                   <Arrow className="sidebar__menu-arrow" />
@@ -146,25 +142,21 @@ export default function Sidebar({
                 {item.submenu && (
                   <div
                     className="sidebar__submenu"
-                    style={{ height: contentHeight[index] }}
-                  >
+                    style={{ height: contentHeight[index] }}>
                     <ul
                       className="sidebar__submenu-list"
-                      ref={(el) => addToRefs(el, submenuLists)}
-                    >
+                      ref={(el) => addToRefs(el, submenuLists)}>
                       {item.submenu.map((subItem) => {
                         return (
                           <li
                             className="sidebar__submenu-item"
-                            key={subItem.id}
-                          >
+                            key={subItem.id}>
                             <Link
                               to={subItem.to}
                               className={
                                 "sidebar__submenu-link" +
                                 (checkUrl(subItem.to) ? " active" : "")
-                              }
-                            >
+                              }>
                               {subItem.title}
                             </Link>
                           </li>
@@ -179,14 +171,14 @@ export default function Sidebar({
         </ul>
         <footer className="sidebar__footer sidebar__wrapper">
           <Social className="social--sidebar" />
-          <button
+          {/* <button
             className={
               "sidebar__switcher switcher" + (nightmode ? " active" : "")
             }
             onClick={() => setNightmode(!nightmode)}
           >
             <div className="switcher__round" />
-          </button>
+          </button> */}
         </footer>
       </div>
     </div>

@@ -357,7 +357,18 @@ function App() {
       />
       <main className="main">
         <Routes>
-          <Route path="/" element={<Home stats={stats} />} />
+          <Route
+            path="/"
+            element={
+              <LaunchpadList
+                launchpadsLoading={launchpadsLoading}
+                userTokens={userTokens}
+                getLaunchpads={getLaunchpads}
+                tokens={tokens}
+              />
+            }
+          />
+          {/* <Route path="/" element={<Home stats={stats} />} /> */}
           <Route
             path="/create_launchpad"
             element={
